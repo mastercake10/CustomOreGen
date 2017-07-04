@@ -1,5 +1,5 @@
 name: CustomOreGen
-version: 1.0
+version: 1.1
 description: Controls the Ore-Generator
 author: Linus122
 soft-depends: [ASkyBlock, AcidIsland, uSkyBlock]

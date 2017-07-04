@@ -28,3 +28,6 @@ generators:
     - SANDSTONE:5.0
     permission: 'oregen.vip'
     unlock_islandLevel: 0
+# Here you can define worlds where the generator should not work
+disabled-worlds:
+- "world_nether"
