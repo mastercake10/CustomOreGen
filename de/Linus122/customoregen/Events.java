@@ -86,10 +86,8 @@ public class Events implements Listener {
 	        if ((r.getTypeId() == mirrorID1) || (r.getTypeId() == mirrorID2)) {
 	    	    Entry<Boolean, Boolean> e = new AbstractMap.SimpleEntry<Boolean, Boolean>(true, false);
 	        	if (face.equals(BlockFace.UP)) {
-	        		System.out.println("Stone Gen: true");
 	        		e.setValue(true);
 	        	} else {
-	        		System.out.println("Stone Gen: false");
 	        		e.setValue(false);
 	        	}
 	            return e;
