@@ -1,5 +1,5 @@
 # CustomOreGen
-Spigot 1.7 - 1.11
+Spigot 1.7 - 1.12
 
 Just a tiny plugin for customizing the default ore generator of minecraft.
 
