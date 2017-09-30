@@ -51,6 +51,7 @@ public class Main extends JavaPlugin {
 
 			clogger.sendMessage("§6[CustomOreGen] §aUsing uSkyBlock as SkyBlock-Plugin");
 		}
+		new Metrics(this);
 	}
 
 	public void onDisable() {
