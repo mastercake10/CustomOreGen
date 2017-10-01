@@ -36,8 +36,7 @@ public class Events implements Listener {
 						if (gc2 == null) {
 							continue;
 						}
-
-						if (p.hasPermission(gc2.permission) && islandLevel >= gc2.unlock_islandLevel) {
+						if ((p.hasPermission(gc2.permission) || gc2.permission.length() == 0) && islandLevel >= gc2.unlock_islandLevel) {
 							// Weiter
 							gc = gc2;
 						}
