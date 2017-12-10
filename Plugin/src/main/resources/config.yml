@@ -1,0 +1,33 @@
+# You can create generators as much as you want.
+# Important: All generators should be named "generator1", "generator2", etc. 
+# You can define the spawnrates of any block in the blocks-section.
+# The spawnrates are in percent, for example 57.3 are 57,3%.
+# All values together should be 100%. If all values together are higher or lower as 100, the plugin would'nt work correctly.
+# The permissions are custom, so you can make a generator for VIPS, and give them the permission "oregen.vip".
+# Are you finish with configuring? Just type /customoregen to reload the plugin!
+
+# Note: If the Island's owner is offline, the cobblestone generator would be choose the first Generator-Config.
+
+generators:
+  generator1:
+    # default generator
+    blocks:
+    # Please use Bukkit-Blocknames. List: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+    - STONE:50.0
+    - SANDSTONE:40.0
+    - IRON_ORE:10.0
+    permission: ''
+    # You can also define from what level the generator should be activated. Example: Leave all permissions empty and
+    # only work with the island Level. The plugin would only consider the islandLevel then.
+    unlock_islandLevel: 0
+  generator2:
+    # vip generator, VIPS need generators.vip permission
+    blocks:
+    - IRON_ORE:90.0
+    - STONE:5.0
+    - SANDSTONE:5.0
+    permission: 'oregen.vip'
+    unlock_islandLevel: 0
+# Here you can define worlds where the generator should not work
+disabled-worlds:
+- "world_nether"
