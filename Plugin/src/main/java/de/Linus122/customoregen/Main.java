@@ -66,7 +66,7 @@ public class Main extends JavaPlugin {
 			return com.wasteofplastic.acidisland.ASkyBlockAPI.getInstance().getIslandLevel(p.getUniqueId());
 		}
 		if (Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
-			return (int) Math.floor(us.talabrek.ultimateskyblock.uSkyBlock.getAPI().getIslandLevel(p));
+			return (int) Math.floor(((us.talabrek.ultimateskyblock.api.uSkyBlockAPI) Bukkit.getPluginManager().getPlugin("uSkyBlock")).getIslandLevel(p));
 		}
 		return 0;
 	}
@@ -85,7 +85,7 @@ public class Main extends JavaPlugin {
 			uuid = com.wasteofplastic.acidisland.ASkyBlockAPI.getInstance()
 					.getOwner(com.wasteofplastic.acidisland.ASkyBlockAPI.getInstance().locationIsOnIsland(set, loc));
 		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
-			String player = us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getIslandInfo(loc).getLeader();
+			String player = ((us.talabrek.ultimateskyblock.api.uSkyBlockAPI) Bukkit.getPluginManager().getPlugin("uSkyBlock")).getIslandInfo(loc).getLeader();
 			if ((Bukkit.getPlayer(player) != null) && (Bukkit.getPlayer(player).getUniqueId() != null)) {
 				uuid = Bukkit.getPlayer(player).getUniqueId();
 			}
