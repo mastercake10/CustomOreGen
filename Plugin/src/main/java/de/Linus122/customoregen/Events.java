@@ -1,12 +1,13 @@
 package de.Linus122.customoregen;
 
-import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFormEvent;
+
+import java.util.Random;
 
 public class Events implements Listener {
 	@SuppressWarnings("deprecation")
@@ -15,7 +16,7 @@ public class Events implements Listener {
 		if (Main.disabledWorlds.contains(event.getBlock().getLocation().getWorld().getName())) {
 			return;
 		}
-
+		
 		Material newBlock = event.getNewState().getType();
 		Block b = event.getBlock();
 		
@@ -24,13 +25,13 @@ public class Events implements Listener {
 		
 		if (newBlock.equals(Material.COBBLESTONE) || newBlock.equals(Material.STONE)) {
 			GeneratorConfig gc = null;
-
+			
 			Player p = Main.getOwner(b.getLocation());
 			if (p == null) {
 				gc = Main.generatorConfigs.get(0);
 			} else {
 				int islandLevel = Main.getLevel(p);
-
+				
 				if (Main.activeInWorld.getName().equals(b.getWorld().getName())) {
 					for (GeneratorConfig gc2 : Main.generatorConfigs) {
 						if (gc2 == null) {
@@ -40,7 +41,7 @@ public class Events implements Listener {
 							// Weiter
 							gc = gc2;
 						}
-
+						
 					}
 				}
 			}
@@ -51,7 +52,7 @@ public class Events implements Listener {
 			GeneratorItem winning = getObject(gc);
 			if (Material.getMaterial(winning.name) == null)
 				return;
-
+			
 			if (Material.getMaterial(winning.name).equals(Material.COBBLESTONE) && winning.damage == 0) {
 				return;
 			}
@@ -60,9 +61,9 @@ public class Events implements Listener {
 		}
 	}
 	
-
+	
 	public GeneratorItem getObject(GeneratorConfig gc) {
-
+		
 		Random random = new Random();
 		double d = random.nextDouble() * 100;
 		for (GeneratorItem key : gc.itemList) {
