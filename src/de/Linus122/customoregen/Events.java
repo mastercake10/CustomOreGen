@@ -2,11 +2,13 @@ package de.Linus122.customoregen;
 
 import java.util.Random;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFormEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 public class Events implements Listener {
 	@SuppressWarnings("deprecation")
@@ -23,27 +25,9 @@ public class Events implements Listener {
 		//System.out.println("To: " + newBlock.name());
 		
 		if (newBlock.equals(Material.COBBLESTONE) || newBlock.equals(Material.STONE)) {
-			GeneratorConfig gc = null;
 
-			Player p = Main.getOwner(b.getLocation());
-			if (p == null) {
-				gc = Main.generatorConfigs.get(0);
-			} else {
-				int islandLevel = Main.getLevel(p);
-
-				if (Main.activeInWorld.getName().equals(b.getWorld().getName())) {
-					for (GeneratorConfig gc2 : Main.generatorConfigs) {
-						if (gc2 == null) {
-							continue;
-						}
-						if ((p.hasPermission(gc2.permission) || gc2.permission.length() == 0) && islandLevel >= gc2.unlock_islandLevel) {
-							// Weiter
-							gc = gc2;
-						}
-
-					}
-				}
-			}
+			OfflinePlayer p = Main.getOwner(b.getLocation());
+			GeneratorConfig gc = Main.getGeneratorConfigForPlayer(p);
 			if (gc == null)
 				return;
 			if (getObject(gc) == null)
@@ -56,10 +40,14 @@ public class Events implements Listener {
 				return;
 			}
 			event.setCancelled(true);
-			b.setTypeIdAndData(Material.getMaterial(winning.name).getId(), winning.damage, true);
+			b.setType(Material.getMaterial(winning.name));
+			b.setData(winning.damage, true);
 		}
 	}
-	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent e){
+		Main.getGeneratorConfigForPlayer(e.getPlayer());
+	}
 
 	public GeneratorItem getObject(GeneratorConfig gc) {
 

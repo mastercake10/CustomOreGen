@@ -12,11 +12,14 @@ import java.util.Set;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.google.gson.reflect.TypeToken;
 
 
 public class Main extends JavaPlugin {
@@ -26,7 +29,10 @@ public class Main extends JavaPlugin {
 	public static World activeInWorld;
 
 	public static ConsoleCommandSender clogger;
-
+	
+	private static HashMap<UUID, Integer> cachedOregenConfigs = new HashMap<UUID, Integer>();
+	private static JSONConfig cachedOregenJsonConfig;
+	
 	public void onEnable() {
 		clogger = getServer().getConsoleSender();
 		PluginManager pm = Bukkit.getPluginManager();
@@ -36,6 +42,11 @@ public class Main extends JavaPlugin {
 			loadConfig();
 		}catch(IOException e) {
 			e.printStackTrace();
+		}
+		cachedOregenJsonConfig = new JSONConfig(cachedOregenConfigs, new TypeToken<HashMap<UUID, Integer>>() { }.getType(), this);
+		cachedOregenConfigs = (HashMap<UUID, Integer>) cachedOregenJsonConfig.get();
+		if(cachedOregenConfigs == null){
+			cachedOregenConfigs = new HashMap<UUID, Integer>();
 		}
 		disabledWorlds = getConfig().getStringList("disabled-worlds");
 		if(Bukkit.getServer().getPluginManager().isPluginEnabled("ASkyBlock")) {
@@ -55,25 +66,23 @@ public class Main extends JavaPlugin {
 	}
 
 	public void onDisable() {
-		
+		cachedOregenJsonConfig.saveToDisk(cachedOregenConfigs);
 	}
 
-	public static int getLevel(Player p) {
+	public static int getLevel(UUID uuid) {
 		if(Bukkit.getServer().getPluginManager().isPluginEnabled("ASkyBlock")) {
-			return com.wasteofplastic.askyblock.ASkyBlockAPI.getInstance().getIslandLevel(p.getUniqueId());
+			return com.wasteofplastic.askyblock.ASkyBlockAPI.getInstance().getIslandLevel(uuid);
 		}
 		if(Bukkit.getServer().getPluginManager().isPluginEnabled("AcidIsland")) {
-			return com.wasteofplastic.acidisland.ASkyBlockAPI.getInstance().getIslandLevel(p.getUniqueId());
+			return com.wasteofplastic.acidisland.ASkyBlockAPI.getInstance().getIslandLevel(uuid);
 		}
 		if(Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
-			return (int) Math.floor(us.talabrek.ultimateskyblock.uSkyBlock.getAPI().getIslandLevel(p));
+			return (int) Math.floor(us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getIslandInfo(us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getPlayerInfo(uuid)).getLevel());
 		}
 		return 0;
 	}
 	
-	static HashMap<UUID, Player> map = new HashMap<UUID, Player>();
-
-	public static Player getOwner(Location loc) {
+	public static OfflinePlayer getOwner(Location loc) {
 		Set<Location> set = new HashSet<Location>();
 		set.add(loc);
 
@@ -87,20 +96,11 @@ public class Main extends JavaPlugin {
 		}else if(Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
 			String player = us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getIslandInfo(loc).getLeader();
 			if((Bukkit.getPlayer(player) != null) && (Bukkit.getPlayer(player).getUniqueId() != null)) {
-				uuid = Bukkit.getPlayer(player).getUniqueId();
+				uuid = Bukkit.getOfflinePlayer(player).getUniqueId();
 			}
 		}
 
-		Player p = Bukkit.getPlayer(uuid);
-
-		if(p != null) {
-			map.put(uuid, p);
-			if(p.isOnline()) {
-				activeInWorld = p.getWorld();
-			}
-		}else if(map.containsKey(uuid)) {
-			p = (Player) map.get(uuid);
-		}
+		OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
 
 		return p;
 	}
@@ -111,6 +111,7 @@ public class Main extends JavaPlugin {
 	}
 
 	public void loadConfig() throws IOException {
+		// Writing default config to data directory
 		File cfg = new File("plugins/CustomOreGen/config.yml");
 		File dir = new File("plugins/CustomOreGen/");
 		if(!dir.exists()) dir.mkdirs();
@@ -126,12 +127,12 @@ public class Main extends JavaPlugin {
 			writer.close();	
 		}
 		 
-
+		this.reloadConfig();
 		generatorConfigs = new ArrayList<GeneratorConfig>();
 		int i = 0;
 		while(true){
 			i++;
-			if(this.getConfig().contains("generators.generator" + i)){
+			if(this.getConfig().contains("generators.generator" + i, true)){
 				GeneratorConfig gc = new GeneratorConfig();
 				gc.permission = this.getConfig().getString("generators.generator" + i + ".permission");
 				gc.unlock_islandLevel = this.getConfig().getInt("generators.generator" + i + ".unlock_islandLevel");
@@ -148,6 +149,7 @@ public class Main extends JavaPlugin {
 							gc.itemList.add(new GeneratorItem(material, (byte) damage, percent));
 						}
 					}catch(Exception e){
+						e.printStackTrace();
 					}
 				}
 				generatorConfigs.add(gc);
@@ -158,5 +160,48 @@ public class Main extends JavaPlugin {
 		}
 		//this.saveConfig();
 		clogger.sendMessage("§6[CustomOreGen] §aLoaded §c" + generatorConfigs.size() + " §agenerators");
+	}
+	public static GeneratorConfig getGeneratorConfigForPlayer(OfflinePlayer p){
+		GeneratorConfig gc = null;
+		int id = 0;
+		if (p == null) {
+			gc = Main.generatorConfigs.get(0);
+			cacheOreGen(p.getUniqueId(), id);
+		} else {
+			
+			int islandLevel = Main.getLevel(p.getUniqueId());
+
+			if(p.isOnline()){
+				Player realP = p.getPlayer();
+				if (Main.activeInWorld.getName().equals(realP.getWorld().getName())) {
+					for (GeneratorConfig gc2 : Main.generatorConfigs) {
+						if (gc2 == null) {
+							continue;
+						}
+						if ((realP.hasPermission(gc2.permission) || gc2.permission.length() == 0) && islandLevel >= gc2.unlock_islandLevel) {
+							// Weiter
+							gc = gc2;
+							id++;
+						}
+
+					}
+				}	
+			}else{
+				gc = getCachedGeneratorConfig(p.getUniqueId());
+			}
+		}
+		if(id > 0){
+			cacheOreGen(p.getUniqueId(), id - 1);
+		}
+		return gc;
+	}
+	public static GeneratorConfig getCachedGeneratorConfig(UUID uuid){
+		if(cachedOregenConfigs.containsKey(uuid)){
+			return Main.generatorConfigs.get(cachedOregenConfigs.get(uuid));
+		}
+		return null;
+	}
+	public static void cacheOreGen(UUID uuid, int configID){
+		cachedOregenConfigs.put(uuid, configID);
 	}
 }
