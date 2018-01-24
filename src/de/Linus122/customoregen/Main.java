@@ -77,6 +77,11 @@ public class Main extends JavaPlugin {
 			return com.wasteofplastic.acidisland.ASkyBlockAPI.getInstance().getIslandLevel(uuid);
 		}
 		if(Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
+			if(Bukkit.getPlayer(uuid) != null){
+				Player p = Bukkit.getPlayer(uuid);
+				return (int) Math.floor(us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getIslandLevel(p));
+			}
+			// Note: The API for getIslandInfo seems to be broken
 			return (int) Math.floor(us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getIslandInfo(us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getPlayerInfo(uuid)).getLevel());
 		}
 		return 0;
@@ -129,33 +134,28 @@ public class Main extends JavaPlugin {
 		 
 		this.reloadConfig();
 		generatorConfigs = new ArrayList<GeneratorConfig>();
-		int i = 0;
-		while(true){
-			i++;
-			if(this.getConfig().contains("generators.generator" + i, true)){
-				GeneratorConfig gc = new GeneratorConfig();
-				gc.permission = this.getConfig().getString("generators.generator" + i + ".permission");
-				gc.unlock_islandLevel = this.getConfig().getInt("generators.generator" + i + ".unlock_islandLevel");
-				for(String raw : this.getConfig().getStringList("generators.generator" + i + ".blocks")){
-					try{
-						if(!raw.contains("!")){
-							String material = raw.split(":")[0];
-							double percent = Double.parseDouble(raw.split(":")[1]);
-							gc.itemList.add(new GeneratorItem(material, (byte) 0, percent));
-						}else{
-							String material = raw.split("!")[0];
-							double percent = Double.parseDouble(raw.split(":")[1]);
-							int damage = Integer.parseInt(raw.split("!")[1].split(":")[0]);
-							gc.itemList.add(new GeneratorItem(material, (byte) damage, percent));
-						}
-					}catch(Exception e){
-						e.printStackTrace();
+		for(String key : this.getConfig().getConfigurationSection("generators").getKeys(false)){
+			GeneratorConfig gc = new GeneratorConfig();
+			gc.permission = this.getConfig().getString("generators." + key + ".permission");
+			gc.unlock_islandLevel = this.getConfig().getInt("generators." + key + ".unlock_islandLevel");
+			for(String raw : this.getConfig().getStringList("generators." + key + ".blocks")){
+				try{
+					if(!raw.contains("!")){
+						String material = raw.split(":")[0];
+						double percent = Double.parseDouble(raw.split(":")[1]);
+						gc.itemList.add(new GeneratorItem(material, (byte) 0, percent));
+					}else{
+						String material = raw.split("!")[0];
+						double percent = Double.parseDouble(raw.split(":")[1]);
+						int damage = Integer.parseInt(raw.split("!")[1].split(":")[0]);
+						gc.itemList.add(new GeneratorItem(material, (byte) damage, percent));
 					}
+				}catch(Exception e){
+					e.printStackTrace();
 				}
-				generatorConfigs.add(gc);
-			}else{
-				break;
 			}
+			generatorConfigs.add(gc);
+
 			
 		}
 		//this.saveConfig();
