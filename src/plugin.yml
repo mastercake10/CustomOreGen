@@ -1,8 +1,8 @@
 name: CustomOreGen
-version: 1.2.35
+version: 1.2.36
 description: Controls the Ore-Generator
 author: Linus122
-soft-depends: [ASkyBlock, AcidIsland, uSkyBlock]
+softdepend: [ASkyBlock, AcidIsland, uSkyBlock]
 main: de.Linus122.customoregen.Main
 commands:
    customoregen:

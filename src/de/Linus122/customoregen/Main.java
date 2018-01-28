@@ -26,12 +26,12 @@ public class Main extends JavaPlugin {
 	public static List<GeneratorConfig> generatorConfigs = new ArrayList<GeneratorConfig>();
 	public static List<String> disabledWorlds = new ArrayList<String>();
 
-	public static World activeInWorld;
-
 	public static ConsoleCommandSender clogger;
 	
 	private static HashMap<UUID, Integer> cachedOregenConfigs = new HashMap<UUID, Integer>();
 	private static JSONConfig cachedOregenJsonConfig;
+	
+	public static String activeInWorldName = "";
 	
 	public void onEnable() {
 		clogger = getServer().getConsoleSender();
@@ -50,16 +50,15 @@ public class Main extends JavaPlugin {
 		}
 		disabledWorlds = getConfig().getStringList("disabled-worlds");
 		if(Bukkit.getServer().getPluginManager().isPluginEnabled("ASkyBlock")) {
-			activeInWorld = com.wasteofplastic.askyblock.ASkyBlock.getIslandWorld();
+			activeInWorldName = com.wasteofplastic.askyblock.ASkyBlock.getIslandWorld().getName();
 			clogger.sendMessage("§6[CustomOreGen] §aUsing ASkyBlock as SkyBlock-Plugin");
 		}else if(Bukkit.getServer().getPluginManager().isPluginEnabled("AcidIsland")) {
-			activeInWorld = com.wasteofplastic.acidisland.ASkyBlock.getIslandWorld();
+			activeInWorldName = com.wasteofplastic.acidisland.ASkyBlock.getIslandWorld().getName();
 			clogger.sendMessage("§6[CustomOreGen] §aUsing AcidIsland as SkyBlock-Plugin");
 		}else if(Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
 			us.talabrek.ultimateskyblock.api.uSkyBlockAPI api = (us.talabrek.ultimateskyblock.api.uSkyBlockAPI) Bukkit.getPluginManager().getPlugin("uSkyBlock");
 			api.getConfig().getString("options.general.worldName");
-			activeInWorld = Bukkit.getWorld(api.getConfig().getString("options.general.worldName"));
-
+			activeInWorldName = api.getConfig().getString("options.general.worldName");
 			clogger.sendMessage("§6[CustomOreGen] §aUsing uSkyBlock as SkyBlock-Plugin");
 		}
 		new Metrics(this);
@@ -67,6 +66,10 @@ public class Main extends JavaPlugin {
 
 	public void onDisable() {
 		cachedOregenJsonConfig.saveToDisk(cachedOregenConfigs);
+	}
+	
+	public static World getActiveWorld(){
+		return Bukkit.getWorld(activeInWorldName);
 	}
 
 	public static int getLevel(UUID uuid) {
@@ -173,7 +176,8 @@ public class Main extends JavaPlugin {
 
 			if(p.isOnline()){
 				Player realP = p.getPlayer();
-				if (Main.activeInWorld.getName().equals(realP.getWorld().getName())) {
+				if (activeInWorldName.equals(
+						realP.getWorld().getName())) {
 					for (GeneratorConfig gc2 : Main.generatorConfigs) {
 						if (gc2 == null) {
 							continue;
