@@ -1,4 +1,4 @@
-package de.Linus122.customoregen;
+package de.Linus122.SpaceIOMetrics;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -17,16 +17,20 @@ import org.bukkit.plugin.Plugin;
 
 import com.google.gson.Gson;
 
+
 /*
  * SpaceIOMetrics main class by Linus122
- * version: 0.02
+ * version: 0.06
  * 
  */
+
 public class Metrics {
 	private Plugin pl;
 	private final Gson gson = new Gson();
 	
-	private String URL = "https://spaceio.de/update/%s";
+	private String URL = "https://spaceio.xyz/update/%s";
+	private final String VERSION = "0.06";
+	private int REFRESH_INTERVAL = 600000;
 	
 	public Metrics(Plugin pl){
 		this.pl = pl;
@@ -43,19 +47,27 @@ public class Metrics {
 		}
 
 		URL = String.format(URL, pl.getName());
+		
+		// fetching refresh interval first
+		pl.getServer().getScheduler().runTaskLaterAsynchronously(pl, () -> {
+			String dataJson = collectData();
+			try{
+				REFRESH_INTERVAL = sendData(dataJson);
+			}catch(Exception e){}
+		}, 20L * 5);
+		
+		// executing repeating task, our main metrics updater
 		pl.getServer().getScheduler().runTaskTimerAsynchronously(pl, () -> {
 			String dataJson = collectData();
 			try{
 				sendData(dataJson);
-			}catch(Exception e){
-				// skip
-				//e.printStackTrace();
-			}
-		}, 20L * 5, 20L * 60 * 10);
+			}catch(Exception e){}
+			
+		}, 20L * (REFRESH_INTERVAL / 1000), 20L * (REFRESH_INTERVAL / 1000));
 	}
 	private String collectData() {
 		Data data = new Data();
-
+		
 		// collect plugin list
 		for(Plugin plug : pl.getServer().getPluginManager().getPlugins()) data.plugs.put(plug.getName(), plug.getDescription().getVersion());
 		
@@ -85,6 +97,13 @@ public class Metrics {
 		data.osArch = System.getProperty("os.arch");
 		data.osVersion = System.getProperty("os.version");
 		
+		String executableName = new java.io.File(Metrics.class.getProtectionDomain()
+				  .getCodeSource()
+				  .getLocation()
+				  .getPath())
+				.getName();
+		data.executableName = executableName;
+		
 		data.diskSize = new File("/").getTotalSpace();
 		
 		if(data.osName.equals("Linux")){
@@ -93,19 +112,21 @@ public class Metrics {
 		
 		return gson.toJson(data);
 	}
-	private void sendData(String dataJson) throws Exception{
+	private int sendData(String dataJson) throws Exception{
 		java.net.URL obj = new java.net.URL(URL);
 		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
 		con.setRequestMethod("POST");
 		con.setRequestProperty("User-Agent", "Java/Bukkit");
+		con.setRequestProperty("Metrics-Version", this.VERSION);
 
 		con.setDoOutput(true);
 		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 		wr.writeBytes(dataJson);
 		wr.flush();
 		wr.close();
-		con.getResponseCode();
+		
+		return Integer.parseInt(con.getHeaderField("interval-millis"));
 	}
 	private String getVersion(){
         String packageName = pl.getServer().getClass().getPackage().getName();
@@ -113,7 +134,8 @@ public class Metrics {
 	}
 	// method source: http://www.jcgonzalez.com/linux-get-distro-from-java-examples
 	private String getDistro(){
-		 //lists all the files ending with -release in the etc folder
+		
+		// lists all the files ending with -release in the etc folder
         File dir = new File("/etc/");
         File fileList[] = new File[0];
         if(dir.exists()){
@@ -123,24 +145,25 @@ public class Metrics {
                 }
             });
         }
-        //looks for the version file (not all linux distros)
-        File fileVersion = new File("/proc/version");
-        if(fileVersion.exists()){
-            fileList = Arrays.copyOf(fileList,fileList.length+1);
-            fileList[fileList.length-1] = fileVersion;
-        }       
-        //prints first version-related file
-        for (File f : fileList) {
-            try {
-                BufferedReader myReader = new BufferedReader(new FileReader(f));
-                String strLine = null;
-                while ((strLine = myReader.readLine()) != null) {
-                    return strLine;
-                }
-                myReader.close();
-            } catch (Exception e) {
-                
-            }
+        try {
+	        // looks for the version file (not all linux distros)
+	        File fileVersion = new File("/proc/version");
+	        if(fileVersion.exists() && fileList.length > 0){
+	            fileList = Arrays.copyOf(fileList,fileList.length+1);
+	            fileList[fileList.length-1] = fileVersion;
+	        }    
+	        
+	        // prints first version-related file
+	        for (File f : fileList) {
+	                BufferedReader br = new BufferedReader(new FileReader(f));
+	                String strLine = null;
+	                while ((strLine = br.readLine()) != null) {
+	                    return strLine;
+	                }
+	                br.close();
+	        }
+        } catch (Exception e) {
+        	// Exception is thrown when something went wrong while obtaining the distribution name.
         }
 		return "unknown";    
 	}
@@ -156,6 +179,7 @@ class Data {
 	int coreCnt;
 	String javaRuntime;
 	
+	String executableName;
 	boolean onlineMode;
 	
 	String osName;
