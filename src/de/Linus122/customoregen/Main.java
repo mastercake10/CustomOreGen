@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
@@ -121,7 +122,10 @@ public class Main extends JavaPlugin {
 		reloadConfig();
 		loadConfig();
 	}
-
+	
+	/**
+	* Just a method that sorts out stupid configuration mistakes made by kids who always give 1-star-reviews on Spigot.
+	*/
 	public void loadConfig() throws IOException {
 		// Writing default config to data directory
 		File cfg = new File("plugins/CustomOreGen/config.yml");
@@ -142,24 +146,44 @@ public class Main extends JavaPlugin {
 		this.reloadConfig();
 		generatorConfigs = new ArrayList<GeneratorConfig>();
 		for(String key : this.getConfig().getConfigurationSection("generators").getKeys(false)){
+			double totalChance = 0d;
 			GeneratorConfig gc = new GeneratorConfig();
 			gc.permission = this.getConfig().getString("generators." + key + ".permission");
 			gc.unlock_islandLevel = this.getConfig().getInt("generators." + key + ".unlock_islandLevel");
+			if(gc.permission == null){
+				System.out.println("[CustomOreGen] Config error: generator " + key + " does not have a valid permission entry");
+			}
+			if(gc.unlock_islandLevel > 0 && gc.permission.length() > 1){
+				System.out.println("[CustomOreGen] Config error: generator " + key + " has both a permission and level setup! Be sure to choose one of them!");
+			}
+			
 			for(String raw : this.getConfig().getStringList("generators." + key + ".blocks")){
 				try{
 					if(!raw.contains("!")){
 						String material = raw.split(":")[0];
+						if(Material.getMaterial(material.toUpperCase()) == null){
+							System.out.println("[CustomOreGen] Config error: generator " + key + " has an unrecognized material: " + material);
+						}
 						double percent = Double.parseDouble(raw.split(":")[1]);
+						totalChance += percent;
 						gc.itemList.add(new GeneratorItem(material, (byte) 0, percent));
 					}else{
 						String material = raw.split("!")[0];
+						if(Material.getMaterial(material.toUpperCase()) == null){
+							System.out.println("[CustomOreGen] Config error: generator " + key + " has an unrecognized material: " + material);
+						}
 						double percent = Double.parseDouble(raw.split(":")[1]);
+						totalChance += percent;
 						int damage = Integer.parseInt(raw.split("!")[1].split(":")[0]);
 						gc.itemList.add(new GeneratorItem(material, (byte) damage, percent));
 					}
 				}catch(Exception e){
+					System.out.println("[CustomOreGen] Config error: general configuration error. Please check you config.yml");
 					e.printStackTrace();
 				}
+			}
+			if(totalChance != 100.0){
+				System.out.println("[CustomOreGen] Config error: generator " + key + " does not have a total chance of 100%! Chance: " + totalChance);
 			}
 			generatorConfigs.add(gc);
 
