@@ -109,7 +109,9 @@ public class Main extends JavaPlugin {
 				uuid = Bukkit.getOfflinePlayer(player).getUniqueId();
 			}
 		}
-
+		if(uuid == null){
+			return null;
+		}
 		OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
 
 		return p;

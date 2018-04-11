@@ -1,6 +1,8 @@
 package de.Linus122.customoregen;
 
 import java.util.Random;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -21,12 +23,10 @@ public class Events implements Listener {
 		Material newBlock = event.getNewState().getType();
 		Block b = event.getBlock();
 		
-		//System.out.println("From: " + event.getBlock().getType().name());
-		//System.out.println("To: " + newBlock.name());
-		
 		if (newBlock.equals(Material.COBBLESTONE) || newBlock.equals(Material.STONE)) {
 
 			OfflinePlayer p = Main.getOwner(b.getLocation());
+			if(p == null) return;
 			GeneratorConfig gc = Main.getGeneratorConfigForPlayer(p);
 			if (gc == null)
 				return;
