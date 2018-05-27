@@ -20,7 +20,7 @@ public class Events implements Listener {
 		}
 		
 		int id = event.getBlock().getTypeId();
-		if ((id >= 8) && (id <= 11)) {
+		if ((id >= 8) && (id <= 11) && id != 9) {
 			Block b = event.getToBlock();
 			int toid = b.getTypeId();
 			if ((toid == 0) && (generatesCobble(id, b))) {
