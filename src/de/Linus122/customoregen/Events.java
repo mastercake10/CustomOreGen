@@ -2,6 +2,7 @@ package de.Linus122.customoregen;
 
 import java.util.Random;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -18,11 +19,26 @@ public class Events implements Listener {
 		if (Main.disabledWorlds.contains(event.getBlock().getLocation().getWorld().getName())) {
 			return;
 		}
-		
+
 		int id = event.getBlock().getTypeId();
-		if ((id >= 8) && (id <= 11) && id != 9) {
+
+		if ((id >= 8) && (id <= 11) && id != 9 && event.getFace() != BlockFace.DOWN) {
 			Block b = event.getToBlock();
 			int toid = b.getTypeId();
+			Location fromLoc = b.getLocation();
+			// fix for (lava -> water)
+			if(id == 10 || id == 11){
+				Block b2 = b.getWorld().getBlockAt(fromLoc.getBlockX() + 1, fromLoc.getBlockY(), fromLoc.getBlockZ());
+				Block b3 = b.getWorld().getBlockAt(fromLoc.getBlockX() - 1, fromLoc.getBlockY(), fromLoc.getBlockZ());
+				Block b4 = b.getWorld().getBlockAt(fromLoc.getBlockX(), fromLoc.getBlockY(), fromLoc.getBlockZ() + 1);
+				Block b5 = b.getWorld().getBlockAt(fromLoc.getBlockX(), fromLoc.getBlockY(), fromLoc.getBlockZ() - 1);
+
+				if(b2.getType().getId() != 9  && b3.getType().getId() != 9  && b4.getType().getId() != 9  && b5.getType().getId() != 9){
+					return;
+				}
+			}
+
+			
 			if ((toid == 0) && (generatesCobble(id, b))) {
 				OfflinePlayer p = Main.getOwner(b.getLocation());
 				if (p == null)
