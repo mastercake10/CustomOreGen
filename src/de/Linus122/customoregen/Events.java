@@ -28,13 +28,7 @@ public class Events implements Listener {
 			Location fromLoc = b.getLocation();
 			// fix for (lava -> water)
 			if (id == 10 || id == 11) {
-				Block b2 = b.getWorld().getBlockAt(fromLoc.getBlockX() + 1, fromLoc.getBlockY(), fromLoc.getBlockZ());
-				Block b3 = b.getWorld().getBlockAt(fromLoc.getBlockX() - 1, fromLoc.getBlockY(), fromLoc.getBlockZ());
-				Block b4 = b.getWorld().getBlockAt(fromLoc.getBlockX(), fromLoc.getBlockY(), fromLoc.getBlockZ() + 1);
-				Block b5 = b.getWorld().getBlockAt(fromLoc.getBlockX(), fromLoc.getBlockY(), fromLoc.getBlockZ() - 1);
-
-				if (b2.getType().getId() != 9 && b3.getType().getId() != 9 && b4.getType().getId() != 9
-						&& b5.getType().getId() != 9) {
+				if(!isSurroundedByWater(fromLoc)){
 					return;
 				}
 			}
@@ -62,6 +56,22 @@ public class Events implements Listener {
 				b.setData(winning.damage, true);
 			}
 		}
+
+	}
+
+	public boolean isSurroundedByWater(Location fromLoc) {
+		Block[] blocks = {
+				fromLoc.getWorld().getBlockAt(fromLoc.getBlockX() + 1, fromLoc.getBlockY(), fromLoc.getBlockZ()),
+				fromLoc.getWorld().getBlockAt(fromLoc.getBlockX() - 1, fromLoc.getBlockY(), fromLoc.getBlockZ()),
+				fromLoc.getWorld().getBlockAt(fromLoc.getBlockX(), fromLoc.getBlockY(), fromLoc.getBlockZ() + 1),
+				fromLoc.getWorld().getBlockAt(fromLoc.getBlockX(), fromLoc.getBlockY(), fromLoc.getBlockZ() - 1) };
+
+		for (Block b : blocks) {
+			if (b.getType() == Material.WATER || b.getType() == Material.STATIONARY_WATER) {
+				return true;
+			}
+		}
+		return false;
 
 	}
 
