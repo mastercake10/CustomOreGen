@@ -35,12 +35,11 @@ public class Events implements Listener {
 
 				if (b2.getType().getId() != 9 && b3.getType().getId() != 9 && b4.getType().getId() != 9
 						&& b5.getType().getId() != 9) {
-					System.out.println("test");
 					return;
 				}
 			}
 
-			if ((toid == 0 || toid == 9) && (generatesCobble(id, b))) {
+			if ((toid == 0 || toid == 9 || toid == 8) && (generatesCobble(id, b))) {
 				OfflinePlayer p = Main.getOwner(b.getLocation());
 				if (p == null)
 					return;
