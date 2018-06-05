@@ -27,19 +27,20 @@ public class Events implements Listener {
 			int toid = b.getTypeId();
 			Location fromLoc = b.getLocation();
 			// fix for (lava -> water)
-			if(id == 10 || id == 11){
+			if (id == 10 || id == 11) {
 				Block b2 = b.getWorld().getBlockAt(fromLoc.getBlockX() + 1, fromLoc.getBlockY(), fromLoc.getBlockZ());
 				Block b3 = b.getWorld().getBlockAt(fromLoc.getBlockX() - 1, fromLoc.getBlockY(), fromLoc.getBlockZ());
 				Block b4 = b.getWorld().getBlockAt(fromLoc.getBlockX(), fromLoc.getBlockY(), fromLoc.getBlockZ() + 1);
 				Block b5 = b.getWorld().getBlockAt(fromLoc.getBlockX(), fromLoc.getBlockY(), fromLoc.getBlockZ() - 1);
 
-				if(b2.getType().getId() != 9  && b3.getType().getId() != 9  && b4.getType().getId() != 9  && b5.getType().getId() != 9){
+				if (b2.getType().getId() != 9 && b3.getType().getId() != 9 && b4.getType().getId() != 9
+						&& b5.getType().getId() != 9) {
+					System.out.println("test");
 					return;
 				}
 			}
 
-			
-			if ((toid == 0) && (generatesCobble(id, b))) {
+			if ((toid == 0 || toid == 9) && (generatesCobble(id, b))) {
 				OfflinePlayer p = Main.getOwner(b.getLocation());
 				if (p == null)
 					return;
