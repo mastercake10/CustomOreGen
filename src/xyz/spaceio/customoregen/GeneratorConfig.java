@@ -1,4 +1,4 @@
-package de.Linus122.customoregen;
+package xyz.spaceio.customoregen;
 
 import java.util.ArrayList;
 import java.util.List;

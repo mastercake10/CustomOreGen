@@ -1,4 +1,4 @@
-package de.Linus122.customoregen;
+package xyz.spaceio.customoregen;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +25,7 @@ import com.google.gson.reflect.TypeToken;
 import de.Linus122.SpaceIOMetrics.Metrics;
 
 
-public class Main extends JavaPlugin {
+public class CustomOreGen extends JavaPlugin {
 	public static List<GeneratorConfig> generatorConfigs = new ArrayList<GeneratorConfig>();
 	public static List<String> disabledWorlds = new ArrayList<String>();
 
@@ -196,17 +196,17 @@ public class Main extends JavaPlugin {
 		GeneratorConfig gc = null;
 		int id = 0;
 		if (p == null) {
-			gc = Main.generatorConfigs.get(0);
+			gc = CustomOreGen.generatorConfigs.get(0);
 			cacheOreGen(p.getUniqueId(), id);
 		} else {
 			
-			int islandLevel = Main.getLevel(p.getUniqueId());
+			int islandLevel = CustomOreGen.getLevel(p.getUniqueId());
 
 			if(p.isOnline()){
 				Player realP = p.getPlayer();
 				if (activeInWorldName.equals(
 						realP.getWorld().getName())) {
-					for (GeneratorConfig gc2 : Main.generatorConfigs) {
+					for (GeneratorConfig gc2 : CustomOreGen.generatorConfigs) {
 						if (gc2 == null) {
 							continue;
 						}
@@ -229,7 +229,7 @@ public class Main extends JavaPlugin {
 	}
 	public static GeneratorConfig getCachedGeneratorConfig(UUID uuid){
 		if(cachedOregenConfigs.containsKey(uuid)){
-			return Main.generatorConfigs.get(cachedOregenConfigs.get(uuid));
+			return CustomOreGen.generatorConfigs.get(cachedOregenConfigs.get(uuid));
 		}
 		return null;
 	}

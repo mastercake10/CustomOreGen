@@ -3,7 +3,7 @@ version: 1.2.42
 description: Controls the Ore-Generator
 author: Linus122
 softdepend: [ASkyBlock, AcidIsland, uSkyBlock]
-main: de.Linus122.customoregen.Main
+main: xyz.spaceio.customoregen.CustomOreGen
 commands:
    customoregen:
      description: reloads the plugin

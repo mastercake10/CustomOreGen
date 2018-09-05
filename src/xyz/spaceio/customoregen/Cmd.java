@@ -1,4 +1,4 @@
-package de.Linus122.customoregen;
+package xyz.spaceio.customoregen;
 
 import java.io.IOException;
 import org.bukkit.command.Command;
@@ -6,10 +6,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 public class Cmd implements CommandExecutor {
-	Main main;
+	CustomOreGen plugin;
 
-	public Cmd(Main main) {
-		this.main = main;
+	public Cmd(CustomOreGen main) {
+		this.plugin = main;
 	}
 
 	public boolean onCommand(CommandSender cs, Command arg1, String arg2, String[] arg3) {
@@ -17,7 +17,7 @@ public class Cmd implements CommandExecutor {
 			cs.sendMessage("You dont have permissions.");
 		} else {
 			try {
-				this.main.reload();
+				this.plugin.reload();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

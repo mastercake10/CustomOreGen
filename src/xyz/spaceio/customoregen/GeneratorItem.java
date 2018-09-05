@@ -1,4 +1,4 @@
-package de.Linus122.customoregen;
+package xyz.spaceio.customoregen;
 
 public class GeneratorItem {
 

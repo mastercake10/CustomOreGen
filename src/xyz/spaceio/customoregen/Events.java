@@ -1,4 +1,4 @@
-package de.Linus122.customoregen;
+package xyz.spaceio.customoregen;
 
 import java.util.Random;
 
@@ -16,7 +16,7 @@ public class Events implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onFromTo(BlockFromToEvent event) {
-		if (Main.disabledWorlds.contains(event.getBlock().getLocation().getWorld().getName())) {
+		if (CustomOreGen.disabledWorlds.contains(event.getBlock().getLocation().getWorld().getName())) {
 			return;
 		}
 
@@ -34,10 +34,10 @@ public class Events implements Listener {
 			}
 
 			if ((toid == 0 || toid == 9 || toid == 8) && (generatesCobble(id, b))) {
-				OfflinePlayer p = Main.getOwner(b.getLocation());
+				OfflinePlayer p = CustomOreGen.getOwner(b.getLocation());
 				if (p == null)
 					return;
-				GeneratorConfig gc = Main.getGeneratorConfigForPlayer(p);
+				GeneratorConfig gc = CustomOreGen.getGeneratorConfigForPlayer(p);
 				if (gc == null)
 					return;
 				if (getObject(gc) == null)
@@ -77,7 +77,7 @@ public class Events implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
-		Main.getGeneratorConfigForPlayer(e.getPlayer());
+		CustomOreGen.getGeneratorConfigForPlayer(e.getPlayer());
 	}
 
 	public GeneratorItem getObject(GeneratorConfig gc) {
