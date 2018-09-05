@@ -23,7 +23,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.google.gson.reflect.TypeToken;
 
 import de.Linus122.SpaceIOMetrics.Metrics;
-
+import xyz.spaceio.hooks.ASkyBlockHook;
+import xyz.spaceio.hooks.AcidIslandHook;
+import xyz.spaceio.hooks.SkyblockAPIHook;
+import xyz.spaceio.hooks.uSkyBlockHook;
 
 public class CustomOreGen extends JavaPlugin {
 	public static List<GeneratorConfig> generatorConfigs = new ArrayList<GeneratorConfig>();
@@ -36,10 +39,18 @@ public class CustomOreGen extends JavaPlugin {
 	
 	public static String activeInWorldName = "";
 	
+	private SkyblockAPIHook skyblockAPI;
+	
+	@Override
 	public void onEnable() {
 		clogger = getServer().getConsoleSender();
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new Events(), this);
+		
+		this.loadHook();
+		activeInWorldName = skyblockAPI.getSkyBlockWorldName();
+		
+		
 		Bukkit.getPluginCommand("customoregen").setExecutor(new Cmd(this));
 		try{
 			loadConfig();
@@ -52,21 +63,27 @@ public class CustomOreGen extends JavaPlugin {
 			cachedOregenConfigs = new HashMap<UUID, Integer>();
 		}
 		disabledWorlds = getConfig().getStringList("disabled-worlds");
-		if(Bukkit.getServer().getPluginManager().isPluginEnabled("ASkyBlock")) {
-			activeInWorldName = com.wasteofplastic.askyblock.ASkyBlock.getIslandWorld().getName();
-			clogger.sendMessage("§6[CustomOreGen] §aUsing ASkyBlock as SkyBlock-Plugin");
-		}else if(Bukkit.getServer().getPluginManager().isPluginEnabled("AcidIsland")) {
-			activeInWorldName = com.wasteofplastic.acidisland.ASkyBlock.getIslandWorld().getName();
-			clogger.sendMessage("§6[CustomOreGen] §aUsing AcidIsland as SkyBlock-Plugin");
-		}else if(Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
-			us.talabrek.ultimateskyblock.api.uSkyBlockAPI api = (us.talabrek.ultimateskyblock.api.uSkyBlockAPI) Bukkit.getPluginManager().getPlugin("uSkyBlock");
-			api.getConfig().getString("options.general.worldName");
-			activeInWorldName = api.getConfig().getString("options.general.worldName");
-			clogger.sendMessage("§6[CustomOreGen] §aUsing uSkyBlock as SkyBlock-Plugin");
-		}
+		
 		new Metrics(this);
 	}
 
+	/**
+	 * creates a new api hook instance for the used skyblock plugin
+	 */
+	private void loadHook() {
+		if(Bukkit.getServer().getPluginManager().isPluginEnabled("ASkyBlock")) {
+			skyblockAPI = new ASkyBlockHook();
+			clogger.sendMessage("§6[CustomOreGen] §aUsing ASkyBlock as SkyBlock-Plugin");
+		}else if(Bukkit.getServer().getPluginManager().isPluginEnabled("AcidIsland")) {
+			skyblockAPI = new AcidIslandHook();
+			clogger.sendMessage("§6[CustomOreGen] §aUsing AcidIsland as SkyBlock-Plugin");
+		}else if(Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
+			skyblockAPI = new uSkyBlockHook();
+			clogger.sendMessage("§6[CustomOreGen] §aUsing uSkyBlock as SkyBlock-Plugin");
+		}
+	}
+	
+	@Override
 	public void onDisable() {
 		cachedOregenJsonConfig.saveToDisk(cachedOregenConfigs);
 	}
@@ -75,42 +92,12 @@ public class CustomOreGen extends JavaPlugin {
 		return Bukkit.getWorld(activeInWorldName);
 	}
 
-	public static int getLevel(UUID uuid) {
-		if(Bukkit.getServer().getPluginManager().isPluginEnabled("ASkyBlock")) {
-			return com.wasteofplastic.askyblock.ASkyBlockAPI.getInstance().getIslandLevel(uuid);
-		}
-		if(Bukkit.getServer().getPluginManager().isPluginEnabled("AcidIsland")) {
-			return com.wasteofplastic.acidisland.ASkyBlockAPI.getInstance().getIslandLevel(uuid);
-		}
-		if(Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
-			if(Bukkit.getPlayer(uuid) != null){
-				Player p = Bukkit.getPlayer(uuid);
-				us.talabrek.ultimateskyblock.api.g
-				return (int) Math.floor(us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getIslandLevel(p));
-			}
-			// Note: The API for getIslandInfo seems to be broken
-			return (int) Math.floor(us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getIslandInfo(us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getPlayerInfo(uuid)).getLevel());
-		}
-		return 0;
+	public int getLevel(UUID uuid) {
+		return skyblockAPI.getIslandLevel(uuid);
 	}
 	
-	public static OfflinePlayer getOwner(Location loc) {
-		Set<Location> set = new HashSet<Location>();
-		set.add(loc);
-
-		UUID uuid = null;
-		if(Bukkit.getServer().getPluginManager().isPluginEnabled("ASkyBlock")) {
-			uuid = com.wasteofplastic.askyblock.ASkyBlockAPI.getInstance()
-					.getOwner(com.wasteofplastic.askyblock.ASkyBlockAPI.getInstance().locationIsOnIsland(set, loc));
-		}else if(Bukkit.getServer().getPluginManager().isPluginEnabled("AcidIsland")) {
-			uuid = com.wasteofplastic.acidisland.ASkyBlockAPI.getInstance()
-					.getOwner(com.wasteofplastic.acidisland.ASkyBlockAPI.getInstance().locationIsOnIsland(set, loc));
-		}else if(Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
-			String player = us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getIslandInfo(loc).getLeader();
-			if((Bukkit.getPlayer(player) != null) && (Bukkit.getPlayer(player).getUniqueId() != null)) {
-				uuid = Bukkit.getOfflinePlayer(player).getUniqueId();
-			}
-		}
+	public OfflinePlayer getOwner(Location loc) {
+		UUID uuid = skyblockAPI.getIslandOwner(loc);
 		if(uuid == null){
 			return null;
 		}
