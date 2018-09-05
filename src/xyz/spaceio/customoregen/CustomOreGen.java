@@ -85,6 +85,7 @@ public class CustomOreGen extends JavaPlugin {
 		if(Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
 			if(Bukkit.getPlayer(uuid) != null){
 				Player p = Bukkit.getPlayer(uuid);
+				us.talabrek.ultimateskyblock.api.g
 				return (int) Math.floor(us.talabrek.ultimateskyblock.uSkyBlock.getInstance().getIslandLevel(p));
 			}
 			// Note: The API for getIslandInfo seems to be broken
