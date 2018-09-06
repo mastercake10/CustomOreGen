@@ -13,10 +13,20 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class Events implements Listener {
+	
+	/*
+	 * CustomOreGen main class
+	 */
+	private CustomOreGen plugin;
+	
+	public Events(CustomOreGen customOreGen) {
+		this.plugin = customOreGen;
+	}
+
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onFromTo(BlockFromToEvent event) {
-		if (CustomOreGen.disabledWorlds.contains(event.getBlock().getLocation().getWorld().getName())) {
+		if (plugin.getDisabledWorlds().contains(event.getBlock().getLocation().getWorld().getName())) {
 			return;
 		}
 
@@ -34,10 +44,10 @@ public class Events implements Listener {
 			}
 
 			if ((toid == 0 || toid == 9 || toid == 8) && (generatesCobble(id, b))) {
-				OfflinePlayer p = CustomOreGen.getOwner(b.getLocation());
+				OfflinePlayer p = plugin.getOwner(b.getLocation());
 				if (p == null)
 					return;
-				GeneratorConfig gc = CustomOreGen.getGeneratorConfigForPlayer(p);
+				GeneratorConfig gc = plugin.getGeneratorConfigForPlayer(p);
 				if (gc == null)
 					return;
 				if (getObject(gc) == null)
@@ -59,6 +69,11 @@ public class Events implements Listener {
 
 	}
 
+	/**
+	 * Checks if a block is surrounded by water
+	 * @param fromLoc
+	 * @return
+	 */
 	public boolean isSurroundedByWater(Location fromLoc) {
 		Block[] blocks = {
 				fromLoc.getWorld().getBlockAt(fromLoc.getBlockX() + 1, fromLoc.getBlockY(), fromLoc.getBlockZ()),
@@ -77,9 +92,15 @@ public class Events implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
-		CustomOreGen.getGeneratorConfigForPlayer(e.getPlayer());
+		plugin.getGeneratorConfigForPlayer(e.getPlayer());
 	}
 
+	
+	/**
+	 * Chooses a GeneratorItem randomly
+	 * @param gc
+	 * @return
+	 */
 	public GeneratorItem getObject(GeneratorConfig gc) {
 
 		Random random = new Random();
