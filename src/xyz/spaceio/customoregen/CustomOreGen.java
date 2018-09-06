@@ -52,11 +52,6 @@ public class CustomOreGen extends JavaPlugin {
 	private JSONConfig cachedOregenJsonConfig;
 
 	/*
-	 * The skyblock world name
-	 */
-	private String activeInWorldName = "";
-
-	/*
 	 * API Hook for the corresponding SkyBlock plugin
 	 */
 	private SkyblockAPIHook skyblockAPI;
@@ -73,7 +68,6 @@ public class CustomOreGen extends JavaPlugin {
 		pm.registerEvents(new Events(this), this);
 
 		this.loadHook();
-		activeInWorldName = skyblockAPI.getSkyBlockWorldName();
 
 		Bukkit.getPluginCommand("customoregen").setExecutor(new Cmd(this));
 
@@ -115,7 +109,7 @@ public class CustomOreGen extends JavaPlugin {
 	}
 
 	public World getActiveWorld() {
-		return Bukkit.getWorld(activeInWorldName);
+		return Bukkit.getWorld(skyblockAPI.getSkyBlockWorldName());
 	}
 
 	public int getLevel(UUID uuid) {
@@ -219,7 +213,7 @@ public class CustomOreGen extends JavaPlugin {
 
 			if (p.isOnline()) {
 				Player realP = p.getPlayer();
-				if (activeInWorldName.equals(realP.getWorld().getName())) {
+				if (skyblockAPI.getSkyBlockWorldName().equals(realP.getWorld().getName())) {
 					for (GeneratorConfig gc2 : generatorConfigs) {
 						if (gc2 == null) {
 							continue;
