@@ -26,6 +26,11 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
+		<!-- SpaceIO Repository -->
+		<repository>
+			<id>spaceio-snapshots</id>
+			<url>https://hub.spaceio.xyz/repository/maven-snapshots/</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<!--Spigot API -->
@@ -60,6 +65,12 @@
 			<artifactId>uSkyBlock-API</artifactId>
 			<version>2.6.4</version>
 		</dependency>
+		<!--SpaceIO Metrics -->
+		<dependency>
+			<groupId>de.spaceio</groupId>
+			<artifactId>SpaceIOMetrics</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<!-- Uses the properties in this file for plugin.yml and config.yml -->
@@ -86,6 +97,21 @@
 						<goals>
 							<goal>shade</goal>
 						</goals>
+						<configuration>
+							<artifactSet>
+								<includes>
+									<include>de.spaceio:SpaceIOMetrics</include>
+								</includes>
+							</artifactSet>
+							<filters>
+								<filter>
+									<artifact>de.spaceio:SpaceIOMetrics</artifact>
+									<includes>
+										<include>**</include>
+									</includes>
+								</filter>
+							</filters>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

@@ -192,7 +192,7 @@ public class CustomOreGen extends JavaPlugin {
 				}
 			}
 			if (totalChance != 100.0) {
-				sendConsole(String.format("&cConfig error: generator %s does not have a total chance of 100%! Total chance is: %d", key, totalChance));
+				sendConsole(String.format("&cConfig error: generator %s does not have a total chance of 100.0! Total chance is: %d", key, totalChance));
 			}
 			generatorConfigs.add(gc);
 
