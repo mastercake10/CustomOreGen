@@ -7,11 +7,11 @@ import org.bukkit.Location;
 
 import us.talabrek.ultimateskyblock.api.uSkyBlockAPI;
 
-public class uSkyBlockHook implements SkyblockAPIHook {
+public class HookuSkyBlock implements SkyblockAPIHook {
 
 	private uSkyBlockAPI api;
 
-	public uSkyBlockHook() {
+	public HookuSkyBlock() {
 		api = (uSkyBlockAPI) Bukkit.getPluginManager().getPlugin("uSkyBlock");
 	}
 

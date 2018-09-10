@@ -7,11 +7,11 @@ import org.bukkit.Location;
 
 import world.bentobox.bentobox.BentoBox;
 
-public class BentoBoxHook implements SkyblockAPIHook{
+public class HookBentoBox implements SkyblockAPIHook{
 	
 	private BentoBox api;
 	
-	public BentoBoxHook() {
+	public HookBentoBox() {
 		api = BentoBox.getInstance();
 	}
 

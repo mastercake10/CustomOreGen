@@ -26,11 +26,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.google.gson.reflect.TypeToken;
 
 import de.Linus122.SpaceIOMetrics.Metrics;
-import xyz.spaceio.hooks.ASkyBlockHook;
-import xyz.spaceio.hooks.AcidIslandHook;
-import xyz.spaceio.hooks.BentoBoxHook;
+import xyz.spaceio.hooks.HookASkyBlock;
+import xyz.spaceio.hooks.HookAcidIsland;
+import xyz.spaceio.hooks.HookBentoBox;
 import xyz.spaceio.hooks.SkyblockAPIHook;
-import xyz.spaceio.hooks.uSkyBlockHook;
+import xyz.spaceio.hooks.HookuSkyBlock;
 
 public class CustomOreGen extends JavaPlugin {
 	
@@ -96,16 +96,16 @@ public class CustomOreGen extends JavaPlugin {
 	 */
 	private void loadHook() {
 		if (Bukkit.getServer().getPluginManager().isPluginEnabled("ASkyBlock")) {
-			skyblockAPI = new ASkyBlockHook();
+			skyblockAPI = new HookASkyBlock();
 			sendConsole("&aUsing ASkyBlock as SkyBlock-Plugin");
 		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("AcidIsland")) {
-			skyblockAPI = new AcidIslandHook();
+			skyblockAPI = new HookAcidIsland();
 			sendConsole("&aUsing AcidIsland as SkyBlock-Plugin");
 		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
-			skyblockAPI = new uSkyBlockHook();
+			skyblockAPI = new HookuSkyBlock();
 			sendConsole("&aUsing uSkyBlock as SkyBlock-Plugin");
 		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("BentoBox")) {
-			skyblockAPI = new BentoBoxHook();
+			skyblockAPI = new HookBentoBox();
 			sendConsole("&aUsing BentoBox as SkyBlock-Plugin");
 		}
 	}

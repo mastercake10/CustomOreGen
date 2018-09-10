@@ -6,11 +6,11 @@ import org.bukkit.Location;
 
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
 
-public class ASkyBlockHook implements SkyblockAPIHook {
+public class HookAcidIsland implements SkyblockAPIHook {
 
 	private ASkyBlockAPI api;
 
-	public ASkyBlockHook() {
+	public HookAcidIsland() {
 		api = ASkyBlockAPI.getInstance();
 	}
 
@@ -28,5 +28,4 @@ public class ASkyBlockHook implements SkyblockAPIHook {
 	public String[] getSkyBlockWorldNames() {
 		return new String[] { api.getIslandWorld().getName() };
 	}
-
 }
