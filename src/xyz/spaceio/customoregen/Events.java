@@ -47,7 +47,7 @@ public class Events implements Listener {
 				OfflinePlayer p = plugin.getOwner(b.getLocation());
 				if (p == null)
 					return;
-				GeneratorConfig gc = plugin.getGeneratorConfigForPlayer(p);
+				GeneratorConfig gc = plugin.getGeneratorConfigForPlayer(p, event.getBlock().getWorld().getName());
 				if (gc == null)
 					return;
 				if (getObject(gc) == null)
@@ -92,7 +92,7 @@ public class Events implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
-		plugin.getGeneratorConfigForPlayer(e.getPlayer());
+		plugin.getGeneratorConfigForPlayer(e.getPlayer(), e.getPlayer().getWorld().getName());
 	}
 
 	

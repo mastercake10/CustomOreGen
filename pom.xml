@@ -26,7 +26,12 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
-		<!-- SpaceIO Repository -->
+		<!-- CodeMC repository -->
+		<repository>
+			<id>codemc-repo</id>
+			<url>https://repo.codemc.org/repository/maven-public/</url>
+		</repository>
+		<!-- SpaceIO repository -->
 		<repository>
 			<id>spaceio-snapshots</id>
 			<url>https://hub.spaceio.xyz/repository/maven-snapshots/</url>
@@ -64,6 +69,13 @@
 			<groupId>com.github.rlf</groupId>
 			<artifactId>uSkyBlock-API</artifactId>
 			<version>2.6.4</version>
+		</dependency>
+		<!-- BentoBox -->
+		<dependency>
+			<groupId>world.bentobox</groupId>
+			<artifactId>bentobox</artifactId>
+			<version>0.9.0-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<!--SpaceIO Metrics -->
 		<dependency>

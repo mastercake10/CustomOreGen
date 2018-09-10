@@ -6,16 +6,16 @@ import org.bukkit.Location;
 
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
 
-public class ASkyBlockHook implements SkyblockAPIHook{
-	
+public class ASkyBlockHook implements SkyblockAPIHook {
+
 	private ASkyBlockAPI api;
-	
+
 	public ASkyBlockHook() {
 		api = ASkyBlockAPI.getInstance();
 	}
 
 	@Override
-	public int getIslandLevel(UUID uuid) {
+	public int getIslandLevel(UUID uuid, String world) {
 		return api.getIslandLevel(uuid);
 	}
 
@@ -25,8 +25,8 @@ public class ASkyBlockHook implements SkyblockAPIHook{
 	}
 
 	@Override
-	public String getSkyBlockWorldName() {
-		return api.getIslandWorld().getName();
+	public String[] getSkyBlockWorldNames() {
+		return new String[] { api.getIslandWorld().getName() };
 	}
-	
+
 }

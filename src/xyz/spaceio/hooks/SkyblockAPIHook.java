@@ -10,9 +10,10 @@ public interface SkyblockAPIHook {
 	 * Returns the island level for a defined player uuid
 	 * 
 	 * @param uuid UUID of the island owner
+	 * @param in World world of the island
 	 * @return island level
 	 */
-	public int getIslandLevel(UUID uuid);
+	public int getIslandLevel(UUID uuid, String inWorld);
 	
 	/**
 	 * Gets the owner of an island on a certain location
@@ -23,9 +24,9 @@ public interface SkyblockAPIHook {
 	public UUID getIslandOwner(Location loc);
 	
 	/**
-	 * Obtains the name of the skyblock world
+	 * Obtains the names of the skyblock worlds
 	 * 
-	 * @return the name of the skyblock world
+	 * @return the names of the skyblock worlds
 	 */
-	public String getSkyBlockWorldName();
+	public String[] getSkyBlockWorldNames();
 }

@@ -5,11 +5,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,6 +28,7 @@ import com.google.gson.reflect.TypeToken;
 import de.Linus122.SpaceIOMetrics.Metrics;
 import xyz.spaceio.hooks.ASkyBlockHook;
 import xyz.spaceio.hooks.AcidIslandHook;
+import xyz.spaceio.hooks.BentoBoxHook;
 import xyz.spaceio.hooks.SkyblockAPIHook;
 import xyz.spaceio.hooks.uSkyBlockHook;
 
@@ -100,6 +104,9 @@ public class CustomOreGen extends JavaPlugin {
 		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
 			skyblockAPI = new uSkyBlockHook();
 			sendConsole("&aUsing uSkyBlock as SkyBlock-Plugin");
+		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("BentoBox")) {
+			skyblockAPI = new BentoBoxHook();
+			sendConsole("&aUsing BentoBox as SkyBlock-Plugin");
 		}
 	}
 
@@ -108,12 +115,12 @@ public class CustomOreGen extends JavaPlugin {
 		cachedOregenJsonConfig.saveToDisk(cachedOregenConfigs);
 	}
 
-	public World getActiveWorld() {
-		return Bukkit.getWorld(skyblockAPI.getSkyBlockWorldName());
+	public List<World> getActiveWorlds() {
+		return Arrays.stream(skyblockAPI.getSkyBlockWorldNames()).map(v -> Bukkit.getWorld(v)).collect(Collectors.toList());
 	}
 
-	public int getLevel(UUID uuid) {
-		return skyblockAPI.getIslandLevel(uuid);
+	public int getLevel(UUID uuid, String world) {
+		return skyblockAPI.getIslandLevel(uuid, world);
 	}
 
 	public OfflinePlayer getOwner(Location loc) {
@@ -192,7 +199,7 @@ public class CustomOreGen extends JavaPlugin {
 				}
 			}
 			if (totalChance != 100.0) {
-				sendConsole(String.format("&cConfig error: generator %s does not have a total chance of 100.0! Total chance is: %d", key, totalChance));
+				sendConsole(String.format("&cConfig error: generator %s does not have a total chance of 100.0! Total chance is: %f", key, totalChance));
 			}
 			generatorConfigs.add(gc);
 
@@ -201,7 +208,7 @@ public class CustomOreGen extends JavaPlugin {
 		sendConsole(String.format("&aLoaded &c%d &agenerators!", generatorConfigs.size()));
 	}
 
-	public GeneratorConfig getGeneratorConfigForPlayer(OfflinePlayer p) {
+	public GeneratorConfig getGeneratorConfigForPlayer(OfflinePlayer p, String world) {
 		GeneratorConfig gc = null;
 		int id = 0;
 		if (p == null) {
@@ -209,11 +216,11 @@ public class CustomOreGen extends JavaPlugin {
 			cacheOreGen(p.getUniqueId(), id);
 		} else {
 
-			int islandLevel = getLevel(p.getUniqueId());
+			int islandLevel = getLevel(p.getUniqueId(), world);
 
 			if (p.isOnline()) {
 				Player realP = p.getPlayer();
-				if (skyblockAPI.getSkyBlockWorldName().equals(realP.getWorld().getName())) {
+				if (this.getActiveWorlds().contains(realP.getWorld())) {
 					for (GeneratorConfig gc2 : generatorConfigs) {
 						if (gc2 == null) {
 							continue;
