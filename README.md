@@ -1,8 +1,8 @@
 # CustomOreGen
-Spigot 1.7 - 1.12
+Spigot 1.7 - 1.13.x
 
-Just a tiny plugin for customizing the default ore generator of minecraft.
+Just a tiny plugin for customizing the default ore generator of Minecraft.
 
-works with aSkyBlock by tastybento and uSkyBlock.
+works with ASkyblock, AcidIsland, uSkyblock, and BentoBox (BSkyblock and AcidIsland)
 
-See for more information: https://www.spigotmc.org/resources/customoregen.9532/
+Check SpigotMC for more information: https://www.spigotmc.org/resources/customoregen.9532/
