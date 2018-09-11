@@ -26,6 +26,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.google.gson.reflect.TypeToken;
 
 import de.Linus122.SpaceIOMetrics.Metrics;
+import xyz.spaceio.config.ConfigHandler;
+import xyz.spaceio.config.JSONConfig;
 import xyz.spaceio.hooks.HookASkyBlock;
 import xyz.spaceio.hooks.HookAcidIsland;
 import xyz.spaceio.hooks.HookBentoBox;
@@ -33,22 +35,30 @@ import xyz.spaceio.hooks.SkyblockAPIHook;
 import xyz.spaceio.hooks.HookuSkyBlock;
 
 public class CustomOreGen extends JavaPlugin {
-	
+
 	/*
 	 * Configurations for all generators (defined in the config.yml)
 	 */
 	private List<GeneratorConfig> generatorConfigs = new ArrayList<GeneratorConfig>();
-	
+
 	/*
 	 * Disabled world blacklist
 	 */
 	private List<String> disabledWorlds = new ArrayList<String>();
 
+	public List<GeneratorConfig> getGeneratorConfigs() {
+		return generatorConfigs;
+	}
+
+	public void setGeneratorConfigs(List<GeneratorConfig> generatorConfigs) {
+		this.generatorConfigs = generatorConfigs;
+	}
+
 	/*
 	 * Our logger
 	 */
 	private ConsoleCommandSender clogger;
-	
+
 	/*
 	 * Cache for GeneratorConfig ID's for each player
 	 */
@@ -59,11 +69,16 @@ public class CustomOreGen extends JavaPlugin {
 	 * API Hook for the corresponding SkyBlock plugin
 	 */
 	private SkyblockAPIHook skyblockAPI;
-	
+
+	/*
+	 * Object that handles the loading process of the config.yml file
+	 */
+	private ConfigHandler configHandler = new ConfigHandler(this, "plugins/CustomOreGen/config.yml");;
+
 	/*
 	 * Prefix for the clogger
 	 */
-	private final String PREFIX = "§6[CustomOreGen] "; 
+	private final String PREFIX = "§6[CustomOreGen] ";
 
 	@Override
 	public void onEnable() {
@@ -76,13 +91,16 @@ public class CustomOreGen extends JavaPlugin {
 		Bukkit.getPluginCommand("customoregen").setExecutor(new Cmd(this));
 
 		try {
-			loadConfig();
+			configHandler.loadConfig();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		cachedOregenJsonConfig = new JSONConfig(cachedOregenConfigs, new TypeToken<HashMap<UUID, Integer>>() {
 		}.getType(), this);
 		cachedOregenConfigs = (HashMap<UUID, Integer>) cachedOregenJsonConfig.get();
+		
 		if (cachedOregenConfigs == null) {
 			cachedOregenConfigs = new HashMap<UUID, Integer>();
 		}
@@ -116,7 +134,8 @@ public class CustomOreGen extends JavaPlugin {
 	}
 
 	public List<World> getActiveWorlds() {
-		return Arrays.stream(skyblockAPI.getSkyBlockWorldNames()).map(v -> Bukkit.getWorld(v)).collect(Collectors.toList());
+		return Arrays.stream(skyblockAPI.getSkyBlockWorldNames()).map(v -> Bukkit.getWorld(v))
+				.collect(Collectors.toList());
 	}
 
 	public int getLevel(UUID uuid, String world) {
@@ -135,77 +154,7 @@ public class CustomOreGen extends JavaPlugin {
 
 	public void reload() throws IOException {
 		reloadConfig();
-		loadConfig();
-	}
-
-	/**
-	 * Just a method that sorts out stupid configuration mistakes made by kids who
-	 * always give 1-star-reviews on Spigot.
-	 */
-	public void loadConfig() throws IOException {
-		// Writing default config to data directory
-		File cfg = new File("plugins/CustomOreGen/config.yml");
-		File dir = new File("plugins/CustomOreGen/");
-		if (!dir.exists())
-			dir.mkdirs();
-		if (!cfg.exists()) {
-			FileOutputStream writer = new FileOutputStream(new File(getDataFolder() + "/config.yml"));
-			InputStream out = this.getClassLoader().getResourceAsStream("config.yml");
-			byte[] linebuffer = new byte[4096];
-			int lineLength = 0;
-			while ((lineLength = out.read(linebuffer)) > 0) {
-				writer.write(linebuffer, 0, lineLength);
-			}
-			writer.close();
-		}
-
-		this.reloadConfig();
-		generatorConfigs = new ArrayList<GeneratorConfig>();
-		for (String key : this.getConfig().getConfigurationSection("generators").getKeys(false)) {
-			double totalChance = 0d;
-			GeneratorConfig gc = new GeneratorConfig();
-			gc.permission = this.getConfig().getString("generators." + key + ".permission");
-			gc.unlock_islandLevel = this.getConfig().getInt("generators." + key + ".unlock_islandLevel");
-			if (gc.permission == null) {
-				sendConsole(String.format("&cConfig error: generator %s does not have a valid permission entry!", key));
-			}
-			if (gc.unlock_islandLevel > 0 && gc.permission.length() > 1) {
-				sendConsole(String.format("&cConfig error: generator %s has both a permission and level setup! Be sure to choose one of them!", key));
-			}
-
-			for (String raw : this.getConfig().getStringList("generators." + key + ".blocks")) {
-				try {
-					if (!raw.contains("!")) {
-						String material = raw.split(":")[0];
-						if (Material.getMaterial(material.toUpperCase()) == null) {
-							sendConsole(String.format("&cConfig error: generator %s has an unrecognized material: %s", key, material));
-						}
-						double percent = Double.parseDouble(raw.split(":")[1]);
-						totalChance += percent;
-						gc.itemList.add(new GeneratorItem(material, (byte) 0, percent));
-					} else {
-						String material = raw.split("!")[0];
-						if (Material.getMaterial(material.toUpperCase()) == null) {
-							sendConsole(String.format("&cConfig error: generator %s has an unrecognized material: %s", key, material));
-						}
-						double percent = Double.parseDouble(raw.split(":")[1]);
-						totalChance += percent;
-						int damage = Integer.parseInt(raw.split("!")[1].split(":")[0]);
-						gc.itemList.add(new GeneratorItem(material, (byte) damage, percent));
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					sendConsole("&cConfig error: general configuration error. Please check you config.yml");
-				}
-			}
-			if (totalChance != 100.0) {
-				sendConsole(String.format("&cConfig error: generator %s does not have a total chance of 100.0! Total chance is: %f", key, totalChance));
-			}
-			generatorConfigs.add(gc);
-
-		}
-
-		sendConsole(String.format("&aLoaded &c%d &agenerators!", generatorConfigs.size()));
+		configHandler.loadConfig();
 	}
 
 	public GeneratorConfig getGeneratorConfigForPlayer(OfflinePlayer p, String world) {
@@ -225,7 +174,8 @@ public class CustomOreGen extends JavaPlugin {
 						if (gc2 == null) {
 							continue;
 						}
-						if ((realP.hasPermission(gc2.permission) || gc2.permission.length() == 0) && islandLevel >= gc2.unlock_islandLevel) {
+						if ((realP.hasPermission(gc2.permission) || gc2.permission.length() == 0)
+								&& islandLevel >= gc2.unlock_islandLevel) {
 							// continue
 							gc = gc2;
 							id++;
@@ -261,8 +211,7 @@ public class CustomOreGen extends JavaPlugin {
 	public void cacheOreGen(UUID uuid, int configID) {
 		cachedOregenConfigs.put(uuid, configID);
 	}
-	
-	
+
 	public void sendConsole(String msg) {
 		clogger.sendMessage(PREFIX + msg.replace("&", "§"));
 	}

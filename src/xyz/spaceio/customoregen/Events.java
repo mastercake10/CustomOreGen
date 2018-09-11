@@ -53,17 +53,17 @@ public class Events implements Listener {
 				if (getObject(gc) == null)
 					return;
 				GeneratorItem winning = getObject(gc);
-				if (Material.getMaterial(winning.name) == null)
+				if (Material.getMaterial(winning.getName()) == null)
 					return;
 
-				if (Material.getMaterial(winning.name).equals(Material.COBBLESTONE) && winning.damage == 0) {
+				if (Material.getMaterial(winning.getName()).equals(Material.COBBLESTONE) && winning.getDamage() == 0) {
 					return;
 				}
 				event.setCancelled(true);
-				b.setType(Material.getMaterial(winning.name));
+				b.setType(Material.getMaterial(winning.getName()));
 				// <Block>.setData(...) is deprecated, but there is no
 				// alternative to it. #spigot
-				b.setData(winning.damage, true);
+				b.setData(winning.getDamage(), true);
 			}
 		}
 
@@ -106,7 +106,7 @@ public class Events implements Listener {
 		Random random = new Random();
 		double d = random.nextDouble() * 100;
 		for (GeneratorItem key : gc.itemList) {
-			if ((d -= key.chance) < 0)
+			if ((d -= key.getChance()) < 0)
 				return key;
 		}
 		return new GeneratorItem("COBBLESTONE", (byte) 0, 0); // DEFAULT

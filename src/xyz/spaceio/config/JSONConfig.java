@@ -1,4 +1,4 @@
-package xyz.spaceio.customoregen;
+package xyz.spaceio.config;
 
 import java.io.File;
 import java.io.FileInputStream;
