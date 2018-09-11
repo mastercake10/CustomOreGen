@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 
-import com.wasteofplastic.askyblock.ASkyBlockAPI;
+import com.wasteofplastic.acidisland.ASkyBlockAPI;
 
 public class HookAcidIsland implements SkyblockAPIHook {
 
