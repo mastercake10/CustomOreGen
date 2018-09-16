@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+import bentobox.addon.level.Level;
 import world.bentobox.bentobox.BentoBox;
 
 public class HookBentoBox implements SkyblockAPIHook{
@@ -17,10 +18,12 @@ public class HookBentoBox implements SkyblockAPIHook{
 
 	@Override
 	public int getIslandLevel(UUID uuid, String onWorld) {
-		if(api.getIslands().getIsland(Bukkit.getWorld(onWorld), uuid) != null) {
-			return api.getIslands().getIsland(Bukkit.getWorld(onWorld), uuid).getLevelHandicap();	
-		}
-		return 0;
+		int level[] = {0};
+		api.getAddonsManager().getAddonByName("Level").ifPresent(addon -> {
+		    Level levelAddon = (Level) addon;
+		    level[0] = Math.toIntExact(levelAddon.getIslandLevel(Bukkit.getWorld(onWorld), uuid));
+		});
+		return level[0];
 	}
 
 	@Override
