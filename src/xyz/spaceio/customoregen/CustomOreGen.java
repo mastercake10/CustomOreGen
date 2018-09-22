@@ -99,8 +99,9 @@ public class CustomOreGen extends JavaPlugin {
 
 		cachedOregenJsonConfig = new JSONConfig(cachedOregenConfigs, new TypeToken<HashMap<UUID, Integer>>() {
 		}.getType(), this);
+
 		cachedOregenConfigs = (HashMap<UUID, Integer>) cachedOregenJsonConfig.get();
-		
+
 		if (cachedOregenConfigs == null) {
 			cachedOregenConfigs = new HashMap<UUID, Integer>();
 		}
@@ -143,6 +144,9 @@ public class CustomOreGen extends JavaPlugin {
 	}
 
 	public OfflinePlayer getOwner(Location loc) {
+		if (skyblockAPI.getIslandOwner(loc) == null) {
+			return null;
+		}
 		UUID uuid = skyblockAPI.getIslandOwner(loc);
 		if (uuid == null) {
 			return null;
