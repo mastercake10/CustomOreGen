@@ -13,16 +13,16 @@ import xyz.spaceio.customoregen.GeneratorConfig;
 import xyz.spaceio.customoregen.GeneratorItem;
 
 public class ConfigHandler {
-	
+
 	private File configFile;
 	private CustomOreGen plugin;
-	
+
 	public ConfigHandler(CustomOreGen plugin, String configFilePath) {
 		this.plugin = plugin;
 		this.configFile = new File(configFilePath);
-		
+
 		// create plugin directory if not exist
-		if(this.configFile.getParentFile().exists()) {
+		if (this.configFile.getParentFile().exists()) {
 			this.configFile.getParentFile().mkdirs();
 		}
 	}
@@ -33,7 +33,11 @@ public class ConfigHandler {
 	 */
 	public void loadConfig() throws IOException {
 		// Writing default config to data directory
+		File cfg = new File(String.format("plugins/%s/config.yml", plugin.getName()));
+		File dir = new File(String.format("plugins/%s/", plugin.getName()));
 		
+		if(!dir.exists()) dir.mkdirs();
+
 		if (!this.configFile.exists()) {
 			FileOutputStream writer = new FileOutputStream(configFile);
 			InputStream out = CustomOreGen.class.getClassLoader().getResourceAsStream("config.yml");
@@ -53,10 +57,13 @@ public class ConfigHandler {
 			gc.permission = plugin.getConfig().getString("generators." + key + ".permission");
 			gc.unlock_islandLevel = plugin.getConfig().getInt("generators." + key + ".unlock_islandLevel");
 			if (gc.permission == null) {
-				plugin.sendConsole(String.format("&cConfig error: generator %s does not have a valid permission entry!", key));
+				plugin.sendConsole(
+						String.format("&cConfig error: generator %s does not have a valid permission entry!", key));
 			}
 			if (gc.unlock_islandLevel > 0 && gc.permission.length() > 1) {
-				plugin.sendConsole(String.format("&cConfig error: generator %s has both a permission and level setup! Be sure to choose one of them!", key));
+				plugin.sendConsole(String.format(
+						"&cConfig error: generator %s has both a permission and level setup! Be sure to choose one of them!",
+						key));
 			}
 
 			for (String raw : plugin.getConfig().getStringList("generators." + key + ".blocks")) {
@@ -64,7 +71,8 @@ public class ConfigHandler {
 					if (!raw.contains("!")) {
 						String material = raw.split(":")[0];
 						if (Material.getMaterial(material.toUpperCase()) == null) {
-							plugin.sendConsole(String.format("&cConfig error: generator %s has an unrecognized material: %s", key, material));
+							plugin.sendConsole(String.format(
+									"&cConfig error: generator %s has an unrecognized material: %s", key, material));
 						}
 						double percent = Double.parseDouble(raw.split(":")[1]);
 						totalChance += percent;
@@ -72,7 +80,8 @@ public class ConfigHandler {
 					} else {
 						String material = raw.split("!")[0];
 						if (Material.getMaterial(material.toUpperCase()) == null) {
-							plugin.sendConsole(String.format("&cConfig error: generator %s has an unrecognized material: %s", key, material));
+							plugin.sendConsole(String.format(
+									"&cConfig error: generator %s has an unrecognized material: %s", key, material));
 						}
 						double percent = Double.parseDouble(raw.split(":")[1]);
 						totalChance += percent;
@@ -85,7 +94,9 @@ public class ConfigHandler {
 				}
 			}
 			if (totalChance != 100.0) {
-				plugin.sendConsole(String.format("&cConfig error: generator %s does not have a total chance of 100.0! Total chance is: %f", key, totalChance));
+				plugin.sendConsole(String.format(
+						"&cConfig error: generator %s does not have a total chance of 100.0! Total chance is: %f", key,
+						totalChance));
 			}
 			plugin.getGeneratorConfigs().add(gc);
 
