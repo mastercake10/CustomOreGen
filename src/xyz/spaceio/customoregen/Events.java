@@ -1,7 +1,9 @@
 package xyz.spaceio.customoregen;
 
+import java.util.Arrays;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -11,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+
 
 public class Events implements Listener {
 	
@@ -30,11 +33,11 @@ public class Events implements Listener {
 			return;
 		}
 
-		int id = event.getBlock().getTypeId();
+		int id = this.getID(event.getBlock());
 
 		if ((id >= 8) && (id <= 11) && id != 9 && event.getFace() != BlockFace.DOWN) {
 			Block b = event.getToBlock();
-			int toid = b.getTypeId();
+			int toid = this.getID(b);
 			Location fromLoc = b.getLocation();
 			// fix for (lava -> water)
 			if (id == 10 || id == 11) {
@@ -60,10 +63,18 @@ public class Events implements Listener {
 					return;
 				}
 				event.setCancelled(true);
-				b.setType(Material.getMaterial(winning.getName()));
+				//b.setType(Material.getMaterial(winning.getName()));
 				// <Block>.setData(...) is deprecated, but there is no
 				// alternative to it. #spigot
-				b.setData(winning.getDamage(), true);
+				if(Arrays.stream(event.getBlock().getClass().getMethods()).anyMatch(method -> method.getName() == "getTypeId")) {
+					b.setTypeIdAndData(Material.getMaterial(winning.getName()).getId() , winning.getDamage(), true);
+				}else {
+					Bukkit.getScheduler().runTask(plugin, () -> {
+						b.setType(Material.getMaterial(winning.getName()));
+						b.getState().update(true);
+					});
+				}
+				//b.setData(winning.getDamage(), true);
 			}
 		}
 
@@ -82,7 +93,7 @@ public class Events implements Listener {
 				fromLoc.getWorld().getBlockAt(fromLoc.getBlockX(), fromLoc.getBlockY(), fromLoc.getBlockZ() - 1) };
 
 		for (Block b : blocks) {
-			if (b.getType() == Material.WATER || b.getType() == Material.STATIONARY_WATER) {
+			if (b.getType().toString().contains("WATER")) {
 				return true;
 			}
 		}
@@ -120,10 +131,27 @@ public class Events implements Listener {
 		int mirrorID2 = (id == 8) || (id == 9) ? 11 : 9;
 		for (BlockFace face : this.faces) {
 			Block r = b.getRelative(face, 1);
-			if ((r.getTypeId() == mirrorID1) || (r.getTypeId() == mirrorID2)) {
+			if ((this.getID(r) == mirrorID1) || (this.getID(r) == mirrorID2)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Method for getting the block id from a block
+	 * @param b
+	 * @return
+	 */
+	public int getID(Block b) {
+	    if(Arrays.stream(b.getClass().getMethods()).anyMatch(method -> method.getName() == "getTypeId")) {
+	    	return b.getTypeId();
+	    }else {
+	    	try {
+	    		return Utils.Material113.valueOf(Utils.Material113.class, b.getType().name()).getID();
+	    	} catch(IllegalArgumentException e) {
+	    		return 2;
+	    	}
+	    }
 	}
 }
