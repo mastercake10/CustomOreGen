@@ -35,7 +35,7 @@ public class Events implements Listener {
 
 		int id = this.getID(event.getBlock());
 
-		if ((id >= 8) && (id <= 11) && id != 9 && event.getFace() != BlockFace.DOWN) {
+		if ((id >= 8) && (id <= 11) && event.getFace() != BlockFace.DOWN) {
 			Block b = event.getToBlock();
 			int toid = this.getID(b);
 			Location fromLoc = b.getLocation();
@@ -46,7 +46,7 @@ public class Events implements Listener {
 				}
 			}
 
-			if ((toid == 0 || toid == 9 || toid == 8) && (generatesCobble(id, b))) {
+			if ((toid == 0 || toid == 9 || toid == 8 || toid == 10 || toid == 11) && (generatesCobble(id, b))) {
 				OfflinePlayer p = plugin.getOwner(b.getLocation());
 				if (p == null)
 					return;
