@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>xyz.spaceio</groupId>
 	<artifactId>CustomOreGen</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+	<version>1.3.1-SNAPSHOT</version>
 	<repositories>
 		<!-- Spigot repository -->
 		<repository>
@@ -74,10 +74,17 @@
 		<dependency>
 			<groupId>world.bentobox</groupId>
 			<artifactId>bentobox</artifactId>
-			<version>0.9.0-SNAPSHOT</version>
+			<version>0.15.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- BentoBox -->
+		<!-- BentoBox LevelAddon -->
+		<dependency>
+			<groupId>world.bentobox</groupId>
+			<artifactId>Level</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- SkyBlockEarth -->
 		<dependency>
 			<groupId>me.goodandevil</groupId>
 			<artifactId>skyblockearth</artifactId>

@@ -1,11 +1,13 @@
 package xyz.spaceio.hooks;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 
-import bentobox.addon.level.Level;
 import world.bentobox.bentobox.BentoBox;
 
 public class HookBentoBox implements SkyblockAPIHook{
@@ -13,15 +15,24 @@ public class HookBentoBox implements SkyblockAPIHook{
 	private BentoBox api;
 	
 	public HookBentoBox() {
-		api = BentoBox.getInstance();
+		api = (BentoBox) Bukkit.getPluginManager().getPlugin("BentoBox");
 	}
 
 	@Override
 	public int getIslandLevel(UUID uuid, String onWorld) {
-		int level[] = {0};
+		int level[] = new int[]{0};
+		
+		// TODO: Access the API instead of using reflection
+		
 		api.getAddonsManager().getAddonByName("Level").ifPresent(addon -> {
-		    Level levelAddon = (Level) addon;
-		    level[0] = Math.toIntExact(levelAddon.getIslandLevel(Bukkit.getWorld(onWorld), uuid));
+			try {
+				Method method = addon.getClass().getMethod("getIslandLevel", World.class, UUID.class);
+				long rawLevel = (long) method.invoke(addon, Bukkit.getWorld(onWorld), uuid);
+				level[0] = Math.toIntExact(rawLevel);
+			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		});
 		return level[0];
 	}
@@ -33,7 +44,7 @@ public class HookBentoBox implements SkyblockAPIHook{
 
 	@Override
 	public String[] getSkyBlockWorldNames() {
-		return api.getIWM().getOverWorldNames().stream().toArray(String[]::new);
+		return api.getIWM().getOverWorlds().stream().map(w -> w.getName()).toArray(String[]::new);
 	}
 	
 }
