@@ -37,7 +37,7 @@ public class HookSkyblockEarth implements SkyblockAPIHook {
 
 		api.getIslands().forEach((k, v) -> {
 			Arrays.asList(World.values()).forEach(world -> {
-				if (LocationUtil.isLocationAtLocationRadius(loc, v.getLocation(world, Environment.Island), 85)) {
+				if (LocationUtil.isLocationAtLocationRadius(loc, v.getLocation(world, Environment.Island), v.getRadius())) {
 					owner[0] = k;
 				}
 			});
