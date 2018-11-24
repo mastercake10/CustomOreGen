@@ -2,6 +2,7 @@ package xyz.spaceio.hooks;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -9,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.database.objects.Island;
 
 public class HookBentoBox implements SkyblockAPIHook{
 	
@@ -39,7 +41,12 @@ public class HookBentoBox implements SkyblockAPIHook{
 
 	@Override
 	public UUID getIslandOwner(Location loc) {
-		return api.getIslands().getIslandAt(loc).get().getOwner();
+		Optional<Island> optIsland = api.getIslands().getIslandAt(loc);
+		
+		if(optIsland.isPresent()) {
+			return api.getIslands().getIslandAt(loc).get().getOwner();
+		}
+		return null;
 	}
 
 	@Override
