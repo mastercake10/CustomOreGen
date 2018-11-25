@@ -1,6 +1,7 @@
 package xyz.spaceio.hooks;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.UUID;
@@ -23,6 +24,13 @@ public class HookSkyblockEarth implements SkyblockAPIHook {
 	public HookSkyblockEarth() {
 		mainClass = (me.goodandevil.skyblock.Main) Bukkit.getPluginManager().getPlugin("SkyBlock");
 		api = mainClass.getIslandManager();
+		try {
+			Field f1 = mainClass.getClass().getDeclaredField("generatorManager");
+			f1.setAccessible(true);
+			f1.set(mainClass, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

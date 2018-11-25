@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -72,6 +73,7 @@ public class Events implements Listener {
 					Bukkit.getScheduler().runTask(plugin, () -> {
 						b.setType(Material.getMaterial(winning.getName()));
 						b.getState().update(true);
+						b.getWorld().playSound(b.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1f, 10f);
 					});
 				}
 				//b.setData(winning.getDamage(), true);
