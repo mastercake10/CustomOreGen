@@ -2,7 +2,6 @@ package xyz.spaceio.hooks;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -11,19 +10,21 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import me.goodandevil.skyblock.config.FileManager.Config;
+import me.goodandevil.skyblock.island.IslandEnvironment;
 import me.goodandevil.skyblock.island.IslandManager;
-import me.goodandevil.skyblock.island.Location.Environment;
-import me.goodandevil.skyblock.island.Location.World;
+import me.goodandevil.skyblock.island.IslandWorld;
 import me.goodandevil.skyblock.utils.world.LocationUtil;
 
 public class HookSkyblockEarth implements SkyblockAPIHook {
 
-	private me.goodandevil.skyblock.Main mainClass;
+	private me.goodandevil.skyblock.SkyBlock mainClass;
 	private IslandManager api;
 
 	public HookSkyblockEarth() {
-		mainClass = (me.goodandevil.skyblock.Main) Bukkit.getPluginManager().getPlugin("SkyBlock");
+		mainClass = (me.goodandevil.skyblock.SkyBlock) Bukkit.getPluginManager().getPlugin("SkyBlock");
 		api = mainClass.getIslandManager();
+		
+		// disabling the default generator of this skyblock plugin
 		try {
 			Field f1 = mainClass.getClass().getDeclaredField("generatorManager");
 			f1.setAccessible(true);
@@ -43,15 +44,16 @@ public class HookSkyblockEarth implements SkyblockAPIHook {
 	@Override
 	public UUID getIslandOwner(Location loc) {
 		UUID[] owner = new UUID[1];
-
+		
 		api.getIslands().forEach((k, v) -> {
-			Arrays.asList(World.values()).forEach(world -> {
-				if (LocationUtil.isLocationAtLocationRadius(loc, v.getLocation(world, Environment.Island), v.getRadius())) {
+			Arrays.asList(IslandWorld.values()).forEach(world -> {
+				if (LocationUtil.isLocationAtLocationRadius(loc, v.getLocation(world, IslandEnvironment.Island), v.getRadius())) {
 					owner[0] = k;
 				}
 			});
 
 		});
+		
 		return owner[0];
 	}
 
@@ -62,7 +64,8 @@ public class HookSkyblockEarth implements SkyblockAPIHook {
 		FileConfiguration var2 = var1.getFileConfiguration();
 		String var3 = var2.getString("Island.World.Nether.Name");
 		String var4 = var2.getString("Island.World.Normal.Name");
-		return new String[] {var3, var4};
+		String var5 = var2.getString("Island.World.End.Name");
+		return new String[] {var3, var4, var5};
 	}
 
 }
