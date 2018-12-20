@@ -1,5 +1,6 @@
 package xyz.spaceio.hooks;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -21,13 +22,14 @@ public class HookuSkyBlock implements SkyblockAPIHook {
 	}
 
 	@Override
-	public UUID getIslandOwner(Location loc) {
+	public Optional<UUID> getIslandOwner(Location loc) {
+		Optional<UUID> optional = Optional.empty();
+		
 		String player = api.getIslandInfo(loc).getLeader();
 		if ((Bukkit.getPlayer(player) != null) && (Bukkit.getPlayer(player).getUniqueId() != null)) {
-			return Bukkit.getOfflinePlayer(player).getUniqueId();
-		} else {
-			return null;
+			optional =  Optional.of(Bukkit.getOfflinePlayer(player).getUniqueId());
 		}
+		return optional;
 	}
 
 	@Override

@@ -40,13 +40,14 @@ public class HookBentoBox implements SkyblockAPIHook{
 	}
 
 	@Override
-	public UUID getIslandOwner(Location loc) {
+	public Optional<UUID> getIslandOwner(Location loc) {
 		Optional<Island> optIsland = api.getIslands().getIslandAt(loc);
+		Optional<UUID> optional = Optional.empty();
 		
 		if(optIsland.isPresent()) {
-			return api.getIslands().getIslandAt(loc).get().getOwner();
+			optional = Optional.of(api.getIslands().getIslandAt(loc).get().getOwner());
 		}
-		return null;
+		return optional;
 	}
 
 	@Override

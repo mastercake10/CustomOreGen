@@ -3,6 +3,7 @@ package xyz.spaceio.hooks;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -10,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import me.goodandevil.skyblock.config.FileManager.Config;
+import me.goodandevil.skyblock.island.Island;
 import me.goodandevil.skyblock.island.IslandEnvironment;
 import me.goodandevil.skyblock.island.IslandManager;
 import me.goodandevil.skyblock.island.IslandWorld;
@@ -42,19 +44,19 @@ public class HookSkyblockEarth implements SkyblockAPIHook {
 	}
 
 	@Override
-	public UUID getIslandOwner(Location loc) {
-		UUID[] owner = new UUID[1];
+	public Optional<UUID> getIslandOwner(Location loc) {
+		Optional<UUID> optional = api.getIslands().values().stream().filter(i -> isIslandAtLocation(i, loc)).findFirst().map(i -> i.getOwnerUUID());
 		
-		api.getIslands().forEach((k, v) -> {
-			Arrays.asList(IslandWorld.values()).forEach(world -> {
-				if (LocationUtil.isLocationAtLocationRadius(loc, v.getLocation(world, IslandEnvironment.Island), v.getRadius())) {
-					owner[0] = k;
-				}
-			});
-
-		});
-		
-		return owner[0];
+		return optional;
+	}
+	
+	private boolean isIslandAtLocation(Island island, Location loc) {
+		for(IslandWorld iw : IslandWorld.values()) {
+			if (LocationUtil.isLocationAtLocationRadius(loc, island.getLocation(iw, IslandEnvironment.Island), island.getRadius())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

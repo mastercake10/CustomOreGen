@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -151,11 +152,11 @@ public class CustomOreGen extends JavaPlugin {
 		if (skyblockAPI.getIslandOwner(loc) == null) {
 			return null;
 		}
-		UUID uuid = skyblockAPI.getIslandOwner(loc);
-		if (uuid == null) {
+		Optional<UUID> uuid = skyblockAPI.getIslandOwner(loc);
+		if (!uuid.isPresent()) {
 			return null;
 		}
-		OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
+		OfflinePlayer p = Bukkit.getOfflinePlayer(uuid.get());
 
 		return p;
 	}

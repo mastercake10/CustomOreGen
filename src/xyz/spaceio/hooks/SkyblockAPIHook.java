@@ -1,5 +1,6 @@
 package xyz.spaceio.hooks;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -21,7 +22,7 @@ public interface SkyblockAPIHook {
 	 * @param loc location to check for island
 	 * @return island owner UUID
 	 */
-	public UUID getIslandOwner(Location loc);
+	public Optional<UUID> getIslandOwner(Location loc);
 	
 	/**
 	 * Obtains the names of the skyblock worlds

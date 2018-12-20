@@ -1,5 +1,6 @@
 package xyz.spaceio.hooks;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -20,8 +21,12 @@ public class HookASkyBlock implements SkyblockAPIHook {
 	}
 
 	@Override
-	public UUID getIslandOwner(Location loc) {
-		return api.getIslandAt(loc).getOwner();
+	public Optional<UUID> getIslandOwner(Location loc) {
+		Optional<UUID> optional = Optional.empty();
+		if(api.getIslandAt(loc) != null) {
+			optional = Optional.of(api.getIslandAt(loc).getOwner());
+		}
+		return optional;
 	}
 
 	@Override
