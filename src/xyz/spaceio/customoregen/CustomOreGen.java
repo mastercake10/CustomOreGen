@@ -32,6 +32,7 @@ import xyz.spaceio.config.JSONConfig;
 import xyz.spaceio.hooks.HookASkyBlock;
 import xyz.spaceio.hooks.HookAcidIsland;
 import xyz.spaceio.hooks.HookBentoBox;
+import xyz.spaceio.hooks.HookPlotSquared;
 import xyz.spaceio.hooks.HookSkyblockEarth;
 import xyz.spaceio.hooks.SkyblockAPIHook;
 import xyz.spaceio.hooks.HookuSkyBlock;
@@ -131,6 +132,9 @@ public class CustomOreGen extends JavaPlugin {
 		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("SkyBlock")) {
 			skyblockAPI = new HookSkyblockEarth();
 			sendConsole("&aUsing SkyblockEarth as SkyBlock-Plugin");
+		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("PlotSquared")) {
+			skyblockAPI = new HookPlotSquared();
+			sendConsole("&aUsing PlotSquared as SkyBlock-Plugin");
 		}
 	}
 

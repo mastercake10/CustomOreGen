@@ -91,6 +91,18 @@
 			<version>51-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- PlotSquared -->
+		<dependency>
+			<groupId>com.plotsquared</groupId>
+			<artifactId>plotsquared-api</artifactId>
+			<version>18.12.21-SNAPSHOT</version>
+		</dependency>
+		<!-- Lands -->
+		<dependency>
+			<groupId>me.angeschossen.lands</groupId>
+			<artifactId>Lands</artifactId>
+			<version>2.6.6.2-SNAPSHOT</version>
+		</dependency>
 		<!--SpaceIO Metrics -->
 		<dependency>
 			<groupId>de.spaceio</groupId>
