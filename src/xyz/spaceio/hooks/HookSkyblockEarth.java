@@ -38,9 +38,9 @@ public class HookSkyblockEarth implements SkyblockAPIHook {
 
 	@Override
 	public int getIslandLevel(UUID uuid, String world) {
-		if (api.getIsland(uuid) == null)
+		if (api.getIsland(Bukkit.getOfflinePlayer(uuid)) == null)
 			return 0;
-		return api.getIsland(uuid).getLevel().getLevel();
+		return api.getIsland(Bukkit.getOfflinePlayer(uuid)).getLevel().getLevel();
 	}
 
 	@Override
