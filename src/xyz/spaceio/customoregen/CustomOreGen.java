@@ -32,6 +32,7 @@ import xyz.spaceio.config.JSONConfig;
 import xyz.spaceio.hooks.HookASkyBlock;
 import xyz.spaceio.hooks.HookAcidIsland;
 import xyz.spaceio.hooks.HookBentoBox;
+import xyz.spaceio.hooks.HookIslandWorld;
 import xyz.spaceio.hooks.HookPlotSquared;
 import xyz.spaceio.hooks.HookSkyblockEarth;
 import xyz.spaceio.hooks.SkyblockAPIHook;
@@ -129,12 +130,18 @@ public class CustomOreGen extends JavaPlugin {
 		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("BentoBox")) {
 			skyblockAPI = new HookBentoBox();
 			sendConsole("&aUsing BentoBox as SkyBlock-Plugin");
-		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("SkyBlock")) {
-			skyblockAPI = new HookSkyblockEarth();
-			sendConsole("&aUsing SkyblockEarth as SkyBlock-Plugin");
+		//} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("SkyBlock")) {
+			//skyblockAPI = new HookSkyblockEarth();
+			//sendConsole("&aUsing SkyblockEarth as SkyBlock-Plugin");
 		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("PlotSquared")) {
 			skyblockAPI = new HookPlotSquared();
 			sendConsole("&aUsing PlotSquared as SkyBlock-Plugin");
+		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("IslandWorld")) {
+			skyblockAPI = new HookIslandWorld();
+			sendConsole("&aUsing IslandWorld as SkyBlock-Plugin");
+		} else {
+			sendConsole("§cYou are not using any Skyblock plugin! This plugin only works in addition with a Skyblock plugin of your choice!");
+			Bukkit.getPluginManager().disablePlugin(this);
 		}
 	}
 

@@ -2,6 +2,7 @@ package xyz.spaceio.hooks;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,7 +53,7 @@ public class HookBentoBox implements SkyblockAPIHook{
 
 	@Override
 	public String[] getSkyBlockWorldNames() {
-		return api.getIWM().getOverWorlds().stream().map(w -> w.getName()).toArray(String[]::new);
+		return api.getIWM().getOverWorlds().stream().map(w -> new String[]{w.getName(), w.getName() + "_nether", w.getName() + "_the_end"}).flatMap(s -> Arrays.stream(s)).toArray(String[]::new);
 	}
 	
 }
