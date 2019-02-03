@@ -6,5 +6,6 @@ import java.util.List;
 public class GeneratorConfig {
     public List<GeneratorItem> itemList = new ArrayList<GeneratorItem>();
     public String permission = ";";
+    public String label;
     public int unlock_islandLevel = 0;
 }

@@ -35,7 +35,9 @@ import xyz.spaceio.hooks.HookBentoBox;
 import xyz.spaceio.hooks.HookIslandWorld;
 import xyz.spaceio.hooks.HookPlotSquared;
 import xyz.spaceio.hooks.HookSkyblockEarth;
+import xyz.spaceio.hooks.HookSuperiorSkyblock;
 import xyz.spaceio.hooks.SkyblockAPIHook;
+import xyz.spaceio.misc.NamePlaceholder;
 import xyz.spaceio.hooks.HookuSkyBlock;
 
 public class CustomOreGen extends JavaPlugin {
@@ -110,7 +112,11 @@ public class CustomOreGen extends JavaPlugin {
 			cachedOregenConfigs = new HashMap<UUID, Integer>();
 		}
 		disabledWorlds = getConfig().getStringList("disabled-worlds");
-
+		
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        	new NamePlaceholder(this, "oregen").hook();
+        }
+		
 		new Metrics(this);
 	}
 
@@ -139,8 +145,11 @@ public class CustomOreGen extends JavaPlugin {
 		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("IslandWorld")) {
 			skyblockAPI = new HookIslandWorld();
 			sendConsole("&aUsing IslandWorld as SkyBlock-Plugin");
+		}else if (Bukkit.getServer().getPluginManager().isPluginEnabled("SuperiorSkyblock2")) {
+			skyblockAPI = new HookSuperiorSkyblock();
+			sendConsole("&aUsing SuperiorSkyblock2 as SkyBlock-Plugin");
 		} else {
-			sendConsole("§cYou are not using any Skyblock plugin! This plugin only works in addition with a Skyblock plugin of your choice!");
+			sendConsole("§cYou are not using any skyblock plugin! This plugin only works with a listed skyblock plugin! (check documentations)");
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
 	}

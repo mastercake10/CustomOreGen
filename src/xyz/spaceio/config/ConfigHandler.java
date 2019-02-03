@@ -65,6 +65,7 @@ public class ConfigHandler {
 						"&cConfig error: generator %s has both a permission and level setup! Be sure to choose one of them!",
 						key));
 			}
+			gc.label = plugin.getConfig().getString("generators." + key + ".label", key);
 
 			for (String raw : plugin.getConfig().getStringList("generators." + key + ".blocks")) {
 				try {

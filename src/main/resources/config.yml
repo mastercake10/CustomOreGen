@@ -11,6 +11,8 @@
 generators:
   generator1:
     # default generator
+    # name of the generator (does not need to be set, just for placeholders)
+    label: "beginner"
     blocks:
     # Please use Bukkit-Blocknames. List: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
     - STONE:50.0
@@ -22,6 +24,7 @@ generators:
     unlock_islandLevel: 0
   generator2:
     # vip generator, VIPS need generators.vip permission
+    label: "VIP"
     blocks:
     - IRON_ORE:90.0
     - STONE:5.0
