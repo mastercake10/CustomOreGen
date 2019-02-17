@@ -107,7 +107,7 @@
 		<dependency>
 			<groupId>com.bgsoftware</groupId>
 			<artifactId>SuperiorSkyblock</artifactId>
-			<version>0.0.7-SNAPSHOT</version>
+			<version>0.0.15-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- PlotSquared -->

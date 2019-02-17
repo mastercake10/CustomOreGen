@@ -35,8 +35,7 @@ public class HookSuperiorSkyblock implements SkyblockAPIHook {
 
 	@Override
 	public String[] getSkyBlockWorldNames() {
-		// took from source code of SkyBlock.jar
-		return new String[] {SuperiorSkyblockAPI.getSuperiorSkyblock().getGrid().getSpawnIsland().getCenter().getWorld().getName()};
+		return new String[] {SuperiorSkyblockAPI.getIslandsWorld().getName()};
 	}
 
 }
