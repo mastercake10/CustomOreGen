@@ -35,6 +35,7 @@ import xyz.spaceio.hooks.HookBentoBox;
 import xyz.spaceio.hooks.HookIslandWorld;
 import xyz.spaceio.hooks.HookPlotSquared;
 import xyz.spaceio.hooks.HookSkyblockEarth;
+import xyz.spaceio.hooks.HookSpaceSkyblock;
 import xyz.spaceio.hooks.HookSuperiorSkyblock;
 import xyz.spaceio.hooks.SkyblockAPIHook;
 import xyz.spaceio.misc.NamePlaceholder;
@@ -148,6 +149,9 @@ public class CustomOreGen extends JavaPlugin {
 		}else if (Bukkit.getServer().getPluginManager().isPluginEnabled("SuperiorSkyblock2")) {
 			skyblockAPI = new HookSuperiorSkyblock();
 			sendConsole("&aUsing SuperiorSkyblock2 as SkyBlock-Plugin");
+		}else if (Bukkit.getServer().getPluginManager().isPluginEnabled("SpaceSkyblock")) {
+			skyblockAPI = new HookSpaceSkyblock();
+			sendConsole("&aUsing SpaceSkyblock as SkyBlock-Plugin");
 		} else {
 			sendConsole("§cYou are not using any skyblock plugin! This plugin only works with a listed skyblock plugin! (check documentations)");
 			Bukkit.getPluginManager().disablePlugin(this);
