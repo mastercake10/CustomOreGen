@@ -1,4 +1,4 @@
-package xyz.spaceio.config;
+package xyz.spaceio.configutils;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -27,11 +27,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.google.gson.reflect.TypeToken;
 
 import de.Linus122.SpaceIOMetrics.Metrics;
-import xyz.spaceio.config.ConfigHandler;
-import xyz.spaceio.config.JSONConfig;
+import xyz.spaceio.configutils.ConfigHandler;
+import xyz.spaceio.configutils.JSONConfig;
 import xyz.spaceio.hooks.HookASkyBlock;
 import xyz.spaceio.hooks.HookAcidIsland;
 import xyz.spaceio.hooks.HookBentoBox;
+import xyz.spaceio.hooks.HookInfo;
 import xyz.spaceio.hooks.HookIslandWorld;
 import xyz.spaceio.hooks.HookPlotSquared;
 import xyz.spaceio.hooks.HookSkyblockEarth;
@@ -49,17 +50,9 @@ public class CustomOreGen extends JavaPlugin {
 	private List<GeneratorConfig> generatorConfigs = new ArrayList<GeneratorConfig>();
 
 	/*
-	 * Disabled world blacklist
+	 * Disabled worlds blacklist
 	 */
 	private List<String> disabledWorlds = new ArrayList<String>();
-
-	public List<GeneratorConfig> getGeneratorConfigs() {
-		return generatorConfigs;
-	}
-
-	public void setGeneratorConfigs(List<GeneratorConfig> generatorConfigs) {
-		this.generatorConfigs = generatorConfigs;
-	}
 
 	/*
 	 * Our logger
@@ -97,6 +90,7 @@ public class CustomOreGen extends JavaPlugin {
 
 		Bukkit.getPluginCommand("customoregen").setExecutor(new Cmd(this));
 
+		// load the config.yml
 		try {
 			configHandler.loadConfig();
 		} catch (IOException e) {
@@ -104,74 +98,80 @@ public class CustomOreGen extends JavaPlugin {
 			e.printStackTrace();
 		}
 
-		cachedOregenJsonConfig = new JSONConfig(cachedOregenConfigs, new TypeToken<HashMap<UUID, Integer>>() {
-		}.getType(), this);
+		// some persisting saving stuff
+		
+		cachedOregenJsonConfig = new JSONConfig(new TypeToken<HashMap<UUID, Integer>>() {
+		}.getType(), cachedOregenConfigs, this);
 
-		cachedOregenConfigs = (HashMap<UUID, Integer>) cachedOregenJsonConfig.get();
+		cachedOregenConfigs = (HashMap<UUID, Integer>) cachedOregenJsonConfig.getObject();
 
 		if (cachedOregenConfigs == null) {
 			cachedOregenConfigs = new HashMap<UUID, Integer>();
 		}
+		
 		disabledWorlds = getConfig().getStringList("disabled-worlds");
 		
+		// registering place holders
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
         	new NamePlaceholder(this, "oregen").hook();
         }
 		
 		new Metrics(this);
 	}
+	
+	@Override
+	public void onDisable() {
+		cachedOregenJsonConfig.saveToDisk();
+	}
 
 	/**
-	 * creates a new api hook instance for the used skyblock plugin
+	 * Acquires the corresponding skyblock hook class
 	 */
 	private void loadHook() {
-		if (Bukkit.getServer().getPluginManager().isPluginEnabled("ASkyBlock")) {
-			skyblockAPI = new HookASkyBlock();
-			sendConsole("&aUsing ASkyBlock as SkyBlock-Plugin");
-		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("AcidIsland")) {
-			skyblockAPI = new HookAcidIsland();
-			sendConsole("&aUsing AcidIsland as SkyBlock-Plugin");
-		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("uSkyBlock")) {
-			skyblockAPI = new HookuSkyBlock();
-			sendConsole("&aUsing uSkyBlock as SkyBlock-Plugin");
-		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("BentoBox")) {
-			skyblockAPI = new HookBentoBox();
-			sendConsole("&aUsing BentoBox as SkyBlock-Plugin");
-		//} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("SkyBlock")) {
-			//skyblockAPI = new HookSkyblockEarth();
-			//sendConsole("&aUsing SkyblockEarth as SkyBlock-Plugin");
-		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("PlotSquared")) {
-			skyblockAPI = new HookPlotSquared();
-			sendConsole("&aUsing PlotSquared as SkyBlock-Plugin");
-		} else if (Bukkit.getServer().getPluginManager().isPluginEnabled("IslandWorld")) {
-			skyblockAPI = new HookIslandWorld();
-			sendConsole("&aUsing IslandWorld as SkyBlock-Plugin");
-		}else if (Bukkit.getServer().getPluginManager().isPluginEnabled("SuperiorSkyblock2")) {
-			skyblockAPI = new HookSuperiorSkyblock();
-			sendConsole("&aUsing SuperiorSkyblock2 as SkyBlock-Plugin");
-		}else if (Bukkit.getServer().getPluginManager().isPluginEnabled("SpaceSkyblock")) {
-			skyblockAPI = new HookSpaceSkyblock();
-			sendConsole("&aUsing SpaceSkyblock as SkyBlock-Plugin");
-		} else {
+		for(HookInfo hookInfo : HookInfo.values()) {
+			String pluginName = hookInfo.name();
+			if(Bukkit.getServer().getPluginManager().isPluginEnabled(pluginName)) {
+				sendConsole(String.format("&aUsing %s as SkyBlock-Plugin", pluginName));
+				try {
+					skyblockAPI = (SkyblockAPIHook) hookInfo.getHookClass().newInstance();
+				} catch (InstantiationException | IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		if(skyblockAPI == null) {
 			sendConsole("§cYou are not using any skyblock plugin! This plugin only works with a listed skyblock plugin! (check documentations)");
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
 	}
 
-	@Override
-	public void onDisable() {
-		cachedOregenJsonConfig.saveToDisk(cachedOregenConfigs);
-	}
-
+	/**
+	 * @return all active skyblock worlds
+	 */
 	public List<World> getActiveWorlds() {
 		return Arrays.stream(skyblockAPI.getSkyBlockWorldNames()).map(v -> Bukkit.getWorld(v))
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Returns the current island level based on the skyblock world and player.
+	 * 
+	 * @param uuid UUID of the player to check
+	 * @param world the world of the island to check the level
+	 * @return player's island level
+	 */
 	public int getLevel(UUID uuid, String world) {
 		return skyblockAPI.getIslandLevel(uuid, world);
 	}
 
+	/**
+	 * Gathers the owner of an island at a certain location
+	 * 
+	 * @param loc Location to check
+	 * @return owner
+	 */
 	public OfflinePlayer getOwner(Location loc) {
 		if (skyblockAPI.getIslandOwner(loc) == null) {
 			return null;
@@ -190,17 +190,25 @@ public class CustomOreGen extends JavaPlugin {
 		configHandler.loadConfig();
 	}
 
-	public GeneratorConfig getGeneratorConfigForPlayer(OfflinePlayer p, String world) {
+	/**
+	 * Acquires a generator config that applies for the given player,
+	 * The result depends on the permission or island level of the player.
+	 * 
+	 * @param offlinePlayer the offline player (Usually created using the UUID) 
+	 * @param world			the skyblock world
+	 * @return				the generator config
+	 */
+	public GeneratorConfig getGeneratorConfigForPlayer(OfflinePlayer offlinePlayer, String world) {
 		GeneratorConfig gc = null;
 		int id = 0;
-		if (p == null) {
+		if (offlinePlayer == null) {
 			gc = generatorConfigs.get(0);
-			cacheOreGen(p.getUniqueId(), id);
+			cacheOreGen(offlinePlayer.getUniqueId(), id);
 		} else {
 
-			int islandLevel = getLevel(p.getUniqueId(), world);
-			if (p.isOnline()) {
-				Player realP = p.getPlayer();
+			int islandLevel = getLevel(offlinePlayer.getUniqueId(), world);
+			if (offlinePlayer.isOnline()) {
+				Player realP = offlinePlayer.getPlayer();
 
 				if (this.getActiveWorlds().contains(realP.getWorld())) {
 					for (GeneratorConfig gc2 : generatorConfigs) {
@@ -217,23 +225,30 @@ public class CustomOreGen extends JavaPlugin {
 					}
 				}
 			} else {
-				gc = getCachedGeneratorConfig(p.getUniqueId());
+				gc = getCachedGeneratorConfig(offlinePlayer.getUniqueId());
 			}
 		}
 		if (id > 0) {
-			cacheOreGen(p.getUniqueId(), id - 1);
+			cacheOreGen(offlinePlayer.getUniqueId(), id - 1);
 		}
 		return gc;
 	}
 
+	/**
+	 * Returns all worlds in which the plugin is disabled in (configurable inside the config.yml)
+	 * 
+	 * @return A list of world names as string
+	 */
 	public List<String> getDisabledWorlds() {
 		return disabledWorlds;
 	}
 
-	public void setDisabledWorlds(List<String> disabledWorlds) {
-		this.disabledWorlds = disabledWorlds;
-	}
-
+	/**
+	 * Returns a cached generator config. Useful when an island owner left the server, but a player is still mining at a generator.
+	 * 
+	 * @param uuid	the owners UUID
+	 * @return		the generator config
+	 */
 	public GeneratorConfig getCachedGeneratorConfig(UUID uuid) {
 		if (cachedOregenConfigs.containsKey(uuid)) {
 			return generatorConfigs.get(cachedOregenConfigs.get(uuid));
@@ -241,11 +256,30 @@ public class CustomOreGen extends JavaPlugin {
 		return null;
 	}
 
+	/**
+	 * Writes an existing ore generator config to the cache
+	 * 
+	 * @param uuid		UUID of the owner
+	 * @param configID	the ID of the generator config
+	 */
 	public void cacheOreGen(UUID uuid, int configID) {
 		cachedOregenConfigs.put(uuid, configID);
 	}
 
+	/**
+	 * Sends a formatted messages to the console, colors supported
+	 * 
+	 * @param msg A string using either & or § for colors
+	 */
 	public void sendConsole(String msg) {
 		clogger.sendMessage(PREFIX + msg.replace("&", "§"));
+	}
+	
+	public List<GeneratorConfig> getGeneratorConfigs() {
+		return generatorConfigs;
+	}
+
+	public void setGeneratorConfigs(List<GeneratorConfig> generatorConfigs) {
+		this.generatorConfigs = generatorConfigs;
 	}
 }
