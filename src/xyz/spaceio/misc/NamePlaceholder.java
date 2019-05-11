@@ -3,21 +3,46 @@ package xyz.spaceio.misc;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import me.clip.placeholderapi.external.EZPlaceholderHook;
 import xyz.spaceio.customoregen.CustomOreGen;
 import xyz.spaceio.customoregen.GeneratorConfig;
 
-public class NamePlaceholder extends EZPlaceholderHook {
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+
+public class NamePlaceholder extends PlaceholderExpansion {
+
 	CustomOreGen cog;
-	
-	public NamePlaceholder(Plugin plugin, String placeholderName) {
-		super(plugin, placeholderName);
-		
-		this.cog = (CustomOreGen) plugin;
+
+	public NamePlaceholder(CustomOreGen plugin) {
+		this.cog = plugin;
+	}
+
+	// This tells PlaceholderAPI to not unregister your expansion on reloads since it is provided by the dependency
+	// Introduced in PlaceholderAPI 2.8.5
+	@Override
+	public boolean persist() {
+		return true;
+	}
+
+	// Our placeholders will be %oregen_<params>%
+	@Override
+	public String getIdentifier() {
+		return "oregen";
+	}
+
+	// the author
+	@Override
+	public String getAuthor() {
+		return "Linus122";
+	}
+
+	// This is the version
+	@Override
+	public String getVersion() {
+		return cog.getDescription().getVersion();
 	}
 
 	@Override
-	public String onPlaceholderRequest(Player player, String label) {
+	public String onRequest(OfflinePlayer player, String label) {
 		if(!label.startsWith("generator.")) {
 			return null;
 		}
@@ -29,11 +54,9 @@ public class NamePlaceholder extends EZPlaceholderHook {
 		
 		switch(label.split("\\.")[1]) {
 			case "label":
-				return gc.label;
-			
 			case "name":
 				return gc.label;
-			
+
 			case "level":
 				return String.valueOf(gc.unlock_islandLevel);
 				
@@ -42,5 +65,4 @@ public class NamePlaceholder extends EZPlaceholderHook {
 		}
 		return null;
 	}
-
 }
