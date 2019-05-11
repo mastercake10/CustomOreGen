@@ -113,7 +113,7 @@ public class CustomOreGen extends JavaPlugin {
 		
 		// registering place holders
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-        	new NamePlaceholder(this, "oregen").hook();
+        	new NamePlaceholder(this).register();
         }
 		
 		new Metrics(this);
