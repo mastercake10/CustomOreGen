@@ -1,7 +1,6 @@
 package xyz.spaceio.misc;
 
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.OfflinePlayer;
 
 import xyz.spaceio.customoregen.CustomOreGen;
 import xyz.spaceio.customoregen.GeneratorConfig;
