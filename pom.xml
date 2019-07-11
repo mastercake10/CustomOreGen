@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>com.bgsoftware</groupId>
 			<artifactId>SuperiorSkyblock</artifactId>
-			<version>0.0.15-SNAPSHOT</version>
+			<version>0.1.2-20190711.010640-1</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- SpaceSkyblock -->

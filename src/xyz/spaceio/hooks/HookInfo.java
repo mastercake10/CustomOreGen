@@ -9,7 +9,7 @@ package xyz.spaceio.hooks;
 public enum HookInfo {
 	
 	AcidIsland(HookAcidIsland.class), ASkyBlock(HookASkyBlock.class), BentoBox(HookBentoBox.class), IslandWorld(HookIslandWorld.class), PlotSquared(HookPlotSquared.class),
-	SpaceSkyblock(HookSpaceSkyblock.class), SuperiorSkyblock(HookSuperiorSkyblock.class), uSkyBlock(HookuSkyBlock.class);
+	SpaceSkyblock(HookSpaceSkyblock.class), SuperiorSkyblock2(HookSuperiorSkyblock.class), uSkyBlock(HookuSkyBlock.class);
 	
 	private Class<?> hookClass;
 	
