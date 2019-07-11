@@ -3,8 +3,8 @@
 [![view on SpigotMC](https://img.shields.io/badge/view%20on-spigotmc-orange.svg)](https://www.spigotmc.org/resources/customoregen.9532/)
 
 ## Welcome to the CustomOreGen GitHub repository!
-Spigot 1.7 - 1.13.x
+Spigot 1.7 - 1.14.x
 
 A neat solution for modifying the default ore generator of minecraft. The must-have for every skyblock server!
 
-Works with ASkyblock, AcidIsland, uSkyblock, and BentoBox (BSkyblock and AcidIsland)
+Works with BentoBox, ASkyblock, AcidIsland, uSkyblock, and SuperiorSkyblock2
