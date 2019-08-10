@@ -134,11 +134,11 @@ public class CustomOreGen extends JavaPlugin {
 				sendConsole(String.format("&aUsing %s as SkyBlock-Plugin", pluginName));
 				try {
 					skyblockAPI = (SkyblockAPIHook) hookInfo.getHookClass().newInstance();
+					break;
 				} catch (InstantiationException | IllegalAccessException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				break;
 			}
 		}
 		
