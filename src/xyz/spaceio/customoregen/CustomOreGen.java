@@ -138,6 +138,7 @@ public class CustomOreGen extends JavaPlugin {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				break;
 			}
 		}
 		
