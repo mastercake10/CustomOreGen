@@ -1,22 +1,16 @@
 package xyz.spaceio.customoregen;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
@@ -29,18 +23,9 @@ import com.google.gson.reflect.TypeToken;
 import de.Linus122.SpaceIOMetrics.Metrics;
 import xyz.spaceio.configutils.ConfigHandler;
 import xyz.spaceio.configutils.JSONConfig;
-import xyz.spaceio.hooks.HookASkyBlock;
-import xyz.spaceio.hooks.HookAcidIsland;
-import xyz.spaceio.hooks.HookBentoBox;
 import xyz.spaceio.hooks.HookInfo;
-import xyz.spaceio.hooks.HookIslandWorld;
-import xyz.spaceio.hooks.HookPlotSquared;
-import xyz.spaceio.hooks.HookSkyblockEarth;
-import xyz.spaceio.hooks.HookSpaceSkyblock;
-import xyz.spaceio.hooks.HookSuperiorSkyblock;
 import xyz.spaceio.hooks.SkyblockAPIHook;
 import xyz.spaceio.misc.NamePlaceholder;
-import xyz.spaceio.hooks.HookuSkyBlock;
 
 public class CustomOreGen extends JavaPlugin {
 

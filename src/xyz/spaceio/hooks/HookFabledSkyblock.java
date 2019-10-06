@@ -7,8 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
-import me.goodandevil.skyblock.SkyBlock;
-import me.goodandevil.skyblock.island.Island;
+import com.songoda.skyblock.SkyBlock;
+import com.songoda.skyblock.island.Island;
 
 
 public class HookFabledSkyblock implements SkyblockAPIHook{
@@ -29,7 +29,7 @@ public class HookFabledSkyblock implements SkyblockAPIHook{
 			if(api.getIslandManager().getIsland(skyblockPlayer) != null) {
 				Island is =  api.getIslandManager().getIsland(skyblockPlayer);
 				if(is.getLevel() != null) {
-					return is.getLevel().getLevel();
+					return (int) is.getLevel().getLevel();
 				}
 			}
 		}
@@ -54,7 +54,7 @@ public class HookFabledSkyblock implements SkyblockAPIHook{
 	public String[] getSkyBlockWorldNames() {
 		if(api.getWorldManager() != null) {
 			// a method for getting the islands is missing, so using what we have
-			return Bukkit.getWorlds().stream().filter(w -> api.getWorldManager().isIslandWorld(w)).toArray(String[]::new);
+			return Bukkit.getWorlds().stream().filter(w -> api.getWorldManager().isIslandWorld(w)).map(w -> w.getName()).toArray(String[]::new);
 		}
 		return null;
 	}
