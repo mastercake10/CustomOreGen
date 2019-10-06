@@ -68,7 +68,9 @@ public class CustomOreGen extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		clogger = getServer().getConsoleSender();
+		
 		PluginManager pm = Bukkit.getPluginManager();
+		
 		pm.registerEvents(new Events(this), this);
 
 		this.loadHook();

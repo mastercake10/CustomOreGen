@@ -34,21 +34,23 @@ public class Events implements Listener {
 			return;
 		}
 
-		int id = this.getID(event.getBlock());
-
-		if ((id >= 8) && (id <= 11) && event.getFace() != BlockFace.DOWN) {
-			Block b = event.getToBlock();
-			int toid = this.getID(b);
-			Location fromLoc = b.getLocation();
+		Material fromType = event.getBlock().getType();
+		if (Arrays.asList(Material.WATER, Material.STATIONARY_WATER, Material.LAVA, Material.STATIONARY_LAVA).contains(fromType) && event.getFace() != BlockFace.DOWN) {
+			Block toBlock = event.getToBlock();
+			Material toType = toBlock.getType();
+			
+			Location fromLoc = toBlock.getLocation();
+			
 			// fix for (lava -> water)
-			if (id == 10 || id == 11) {
+			if (fromType.equals(Material.LAVA) || fromType.equals(Material.STATIONARY_LAVA)) {
 				if(!isSurroundedByWater(fromLoc)){
 					return;
 				}
 			}
 
-			if ((toid == 0 || toid == 9 || toid == 8 || toid == 10 || toid == 11) && (generatesCobble(id, b))) {
-				OfflinePlayer p = plugin.getOwner(b.getLocation());
+			if (Arrays.asList(Material.WATER, Material.STATIONARY_WATER, Material.LAVA, Material.STATIONARY_LAVA, Material.AIR).contains(toType) 
+					&& generatesCobble(fromType, toBlock)) {
+				OfflinePlayer p = plugin.getOwner(toBlock.getLocation());
 				if (p == null)
 					return;
 				GeneratorConfig gc = plugin.getGeneratorConfigForPlayer(p, event.getBlock().getWorld().getName());
@@ -68,12 +70,12 @@ public class Events implements Listener {
 				// <Block>.setData(...) is deprecated, but there is no
 				// alternative to it. #spigot
 				if(Arrays.stream(event.getBlock().getClass().getMethods()).anyMatch(method -> method.getName() == "getTypeId")) {
-					b.setTypeIdAndData(Material.getMaterial(winning.getName()).getId() , winning.getDamage(), true);
+					toBlock.setTypeIdAndData(Material.getMaterial(winning.getName()).getId() , winning.getDamage(), true);
 				}else {
 					Bukkit.getScheduler().runTask(plugin, () -> {
-						b.setType(Material.getMaterial(winning.getName()));
-						b.getState().update(true);
-						b.getWorld().playSound(b.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1f, 10f);
+						toBlock.setType(Material.getMaterial(winning.getName()));
+						toBlock.getState().update(true);
+						toBlock.getWorld().playSound(toBlock.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1f, 10f);
 					});
 				}
 				//b.setData(winning.getDamage(), true);
@@ -128,12 +130,14 @@ public class Events implements Listener {
 	private final BlockFace[] faces = { BlockFace.SELF, BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST,
 			BlockFace.SOUTH, BlockFace.WEST };
 
-	public boolean generatesCobble(int id, Block b) {
-		int mirrorID1 = (id == 8) || (id == 9) ? 10 : 8;
-		int mirrorID2 = (id == 8) || (id == 9) ? 11 : 9;
+	public boolean generatesCobble(Material type, Block block) {
+
+		Material mirrorType1 = (type == Material.WATER) || (type == Material.STATIONARY_WATER) ? Material.STATIONARY_LAVA : Material.STATIONARY_WATER;
+		Material mirrorType2 = (type == Material.WATER) || (type == Material.STATIONARY_WATER) ? Material.LAVA : Material.WATER;
+		
 		for (BlockFace face : this.faces) {
-			Block r = b.getRelative(face, 1);
-			if ((this.getID(r) == mirrorID1) || (this.getID(r) == mirrorID2)) {
+			Block r = block.getRelative(face, 1);
+			if (r.getType() == mirrorType1 || r.getType() == mirrorType2) {
 				return true;
 			}
 		}
