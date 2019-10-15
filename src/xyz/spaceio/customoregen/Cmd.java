@@ -2,12 +2,9 @@ package xyz.spaceio.customoregen;
 
 import java.io.IOException;
 
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockFromToEvent;
 
 public class Cmd implements CommandExecutor {
 	CustomOreGen plugin;
@@ -28,20 +25,6 @@ public class Cmd implements CommandExecutor {
 			}
 			cs.sendMessage("§aConfig reloaded!");
 		}
-		
-		Player p = (Player) cs;
-		
-		Block from = p.getWorld().getBlockAt(1200,76,1194);
-		Block to = p.getWorld().getBlockAt(1200,76,1195);
-		
-		long before = System.currentTimeMillis();
-		
-		for(int i = 0; i < 10000; i++) {
-			CustomOreGen.eventClass.onFromTo(new BlockFromToEvent(from, to));
-		}
-		
-		p.sendMessage(System.currentTimeMillis() - before + "");
-	
 		
 		return true;
 	}

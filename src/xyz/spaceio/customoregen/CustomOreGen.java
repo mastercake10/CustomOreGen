@@ -25,6 +25,7 @@ import xyz.spaceio.configutils.ConfigHandler;
 import xyz.spaceio.configutils.JSONConfig;
 import xyz.spaceio.hooks.HookInfo;
 import xyz.spaceio.hooks.HookVanilla;
+import xyz.spaceio.hooks.SkyblockAPICached;
 import xyz.spaceio.hooks.SkyblockAPIHook;
 import xyz.spaceio.misc.NamePlaceholder;
 
@@ -55,6 +56,12 @@ public class CustomOreGen extends JavaPlugin {
 	 * API Hook for the corresponding SkyBlock plugin
 	 */
 	private SkyblockAPIHook skyblockAPI;
+	
+	/*
+	 * API Hook but cached
+	 */
+	private SkyblockAPICached skyblockAPICached;
+
 
 	/*
 	 * Object that handles the loading process of the config.yml file
@@ -65,8 +72,7 @@ public class CustomOreGen extends JavaPlugin {
 	 * Prefix for the clogger
 	 */
 	private final String PREFIX = "§6[CustomOreGen] ";
-	
-	public static Events eventClass;
+
 
 	@Override
 	public void onEnable() {
@@ -74,8 +80,7 @@ public class CustomOreGen extends JavaPlugin {
 		
 		PluginManager pm = Bukkit.getPluginManager();
 		
-		eventClass = new Events(this);
-		pm.registerEvents(eventClass, this);
+		pm.registerEvents(new Events(this), this);
 
 		this.loadHook();
 
@@ -137,6 +142,8 @@ public class CustomOreGen extends JavaPlugin {
 			sendConsole("§cYou are not using any supported skyblock plugin! Will use the vanilla range check hook instead.");
 			skyblockAPI = new HookVanilla();
 		}
+		
+		skyblockAPICached = new SkyblockAPICached(skyblockAPI);
 	}
 
 	/**
@@ -155,7 +162,7 @@ public class CustomOreGen extends JavaPlugin {
 	 * @return player's island level
 	 */
 	public int getLevel(UUID uuid, String world) {
-		return skyblockAPI.getIslandLevel(uuid, world);
+		return this.getSkyblockAPICached().getIslandLevel(uuid, world);
 	}
 
 	/**
@@ -165,10 +172,10 @@ public class CustomOreGen extends JavaPlugin {
 	 * @return owner
 	 */
 	public OfflinePlayer getOwner(Location loc) {
-		if (skyblockAPI.getIslandOwner(loc) == null) {
+		if (this.getSkyblockAPICached().getIslandOwner(loc) == null) {
 			return null;
 		}
-		Optional<UUID> uuid = skyblockAPI.getIslandOwner(loc);
+		Optional<UUID> uuid = this.getSkyblockAPICached().getIslandOwner(loc);
 		if (!uuid.isPresent()) {
 			return null;
 		}
@@ -273,5 +280,12 @@ public class CustomOreGen extends JavaPlugin {
 
 	public void setGeneratorConfigs(List<GeneratorConfig> generatorConfigs) {
 		this.generatorConfigs = generatorConfigs;
+	}
+	
+	/**
+	 * @return the skyblockAPICached
+	 */
+	public SkyblockAPICached getSkyblockAPICached() {
+		return skyblockAPICached;
 	}
 }
