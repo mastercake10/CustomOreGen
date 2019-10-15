@@ -67,8 +67,14 @@ public class ConfigHandler {
 			}
 			gc.label = plugin.getConfig().getString("generators." + key + ".label", key);
 
-			for (String raw : plugin.getConfig().getStringList("generators." + key + ".blocks")) {
+			for (Object obj : plugin.getConfig().getList("generators." + key + ".blocks")) {
 				try {
+					String raw = obj.toString();
+					if(raw.startsWith("{")) {
+						raw = raw.substring(1, raw.length() - 1);
+						raw = raw.replace("=", ":");
+					}
+
 					if (!raw.contains("!")) {
 						String material = raw.split(":")[0];
 						if (Material.getMaterial(material.toUpperCase()) == null) {
@@ -94,7 +100,7 @@ public class ConfigHandler {
 					plugin.sendConsole("&cConfig error: general configuration error. Please check you config.yml");
 				}
 			}
-			if (totalChance != 100.0) {
+			if (Math.round(totalChance) != 100f) {
 				plugin.sendConsole(String.format(
 						"&cConfig error: generator %s does not have a total chance of 100.0! Total chance is: %f", key,
 						totalChance));
