@@ -24,6 +24,7 @@ import de.Linus122.SpaceIOMetrics.Metrics;
 import xyz.spaceio.configutils.ConfigHandler;
 import xyz.spaceio.configutils.JSONConfig;
 import xyz.spaceio.hooks.HookInfo;
+import xyz.spaceio.hooks.HookVanilla;
 import xyz.spaceio.hooks.SkyblockAPIHook;
 import xyz.spaceio.misc.NamePlaceholder;
 
@@ -130,8 +131,8 @@ public class CustomOreGen extends JavaPlugin {
 		}
 		
 		if(skyblockAPI == null) {
-			sendConsole("§cYou are not using any skyblock plugin! This plugin only works with a listed skyblock plugin! (check documentations)");
-			Bukkit.getPluginManager().disablePlugin(this);
+			sendConsole("§cYou are not using any supported skyblock plugin! Will use the vanilla range check hook instead.");
+			skyblockAPI = new HookVanilla();
 		}
 	}
 
