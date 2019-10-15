@@ -20,7 +20,7 @@ public class HookSuperiorSkyblock implements SkyblockAPIHook {
 		if(SuperiorSkyblockAPI.getPlayer(uuid) == null || SuperiorSkyblockAPI.getPlayer(uuid).getIsland() == null) {
 			return 0;
 		}else {
-			return 	SuperiorSkyblockAPI.getPlayer(uuid).getIsland().getIslandLevel();
+			return 	SuperiorSkyblockAPI.getPlayer(uuid).getIsland().getIslandLevelAsBigDecimal().intValue();
 		}
 	}
 
