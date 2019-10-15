@@ -65,6 +65,8 @@ public class CustomOreGen extends JavaPlugin {
 	 * Prefix for the clogger
 	 */
 	private final String PREFIX = "§6[CustomOreGen] ";
+	
+	public static Events eventClass;
 
 	@Override
 	public void onEnable() {
@@ -72,7 +74,8 @@ public class CustomOreGen extends JavaPlugin {
 		
 		PluginManager pm = Bukkit.getPluginManager();
 		
-		pm.registerEvents(new Events(this), this);
+		eventClass = new Events(this);
+		pm.registerEvents(eventClass, this);
 
 		this.loadHook();
 
