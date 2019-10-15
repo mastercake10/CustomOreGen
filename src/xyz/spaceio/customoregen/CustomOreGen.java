@@ -26,6 +26,7 @@ import xyz.spaceio.configutils.JSONConfig;
 import xyz.spaceio.hooks.HookInfo;
 import xyz.spaceio.hooks.HookVanilla;
 import xyz.spaceio.hooks.SkyblockAPIHook;
+import xyz.spaceio.misc.MaterialProvider;
 import xyz.spaceio.misc.NamePlaceholder;
 
 public class CustomOreGen extends JavaPlugin {
@@ -69,6 +70,8 @@ public class CustomOreGen extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		clogger = getServer().getConsoleSender();
+		
+		MaterialProvider.init();
 		
 		PluginManager pm = Bukkit.getPluginManager();
 		
