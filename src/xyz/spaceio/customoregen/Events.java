@@ -1,6 +1,7 @@
 package xyz.spaceio.customoregen;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -25,10 +26,19 @@ public class Events implements Listener {
 	private CustomOreGen plugin;
 	
 	private boolean useLegacyBlockPlaceMethod;
+	private Method legacyBlockPlaceMethod;
 	
 	public Events(CustomOreGen customOreGen) {
 		this.plugin = customOreGen;
-		this.useLegacyBlockPlaceMethod = Arrays.stream(Block.class.getMethods()).anyMatch(method -> method.getName() == "getTypeId");
+		this.useLegacyBlockPlaceMethod = Arrays.stream(Block.class.getMethods()).anyMatch(method -> method.getName() == "setTypeIdAndData");
+		if(this.useLegacyBlockPlaceMethod) {
+			try {
+				legacyBlockPlaceMethod = Block.class.getMethod("setTypeIdAndData", int.class , byte.class, boolean.class);
+			} catch (NoSuchMethodException | SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -75,13 +85,13 @@ public class Events implements Listener {
 				// <Block>.setData(...) is deprecated, but there is no
 				// alternative to it. #spigot
 				if(useLegacyBlockPlaceMethod) {
-					 try {
-						b.getClass().getMethod("setTypeIdAndData", Material.class, byte.class, boolean.class).invoke(b, Material.getMaterial(winning.getName()).getId() , winning.getDamage(), true);
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-							| NoSuchMethodException | SecurityException e) {
+					try {
+						legacyBlockPlaceMethod.invoke(b, Material.getMaterial(winning.getName()).getId() , winning.getDamage(), true);
+					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+	
 				}else {
 					Bukkit.getScheduler().runTask(plugin, () -> {
 						b.setType(Material.getMaterial(winning.getName()));
