@@ -187,12 +187,13 @@ public class Events implements Listener {
 	private final BlockFace[] faces = { BlockFace.SELF, BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST,
 			BlockFace.SOUTH, BlockFace.WEST };
 
-	public boolean generatesCobble(Type type, Block b) {
+	public boolean generatesCobble(Type type, Block b) 
+	{
 		Type mirrorType1 = (type == Type.WATER_STAT) || (type == Type.WATER) ? Type.LAVA_STAT : Type.WATER_STAT;
 		Type mirrorType2 = (type == Type.WATER_STAT) || (type == Type.WATER) ? Type.LAVA : Type.WATER;
 		for (BlockFace face : this.faces) {
-			Block r = b.getRelative(face, 1);
-			if ((this.getType(r) == mirrorType1) || (this.getType(r) == mirrorType2)) {
+			Type r = this.getType(b.getRelative(face, 1));
+			if (r == mirrorType1 || r == mirrorType2) {
 				return true;
 			}
 		}
