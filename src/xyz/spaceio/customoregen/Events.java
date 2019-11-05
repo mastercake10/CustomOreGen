@@ -112,16 +112,16 @@ public class Events implements Listener {
 	 * @param fromLoc
 	 * @return
 	 */
-	public boolean isSurroundedByWater(Location fromLoc) {
-
-		for(BlockFace blockFace : blockFaces) {
-			if(this.getType(fromLoc.getBlock().getRelative(blockFace)) == Type.WATER || this.getType(fromLoc.getBlock().getRelative(blockFace)) == Type.WATER_STAT) {
+	public boolean isSurroundedByWater(Location fromLoc) 
+	{
+		for(BlockFace blockFace : blockFaces) 
+		{
+			Type type = this.getType(fromLoc.getBlock().getRelative(blockFace));
+			if(type == Type.WATER || type == Type.WATER_STAT) {
 				return true;
 			}
 		}
-		
 		return false;
-
 	}
 
 	@EventHandler
