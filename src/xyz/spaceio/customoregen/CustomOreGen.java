@@ -124,17 +124,28 @@ public class CustomOreGen extends JavaPlugin {
 	 * Acquires the corresponding skyblock hook class
 	 */
 	private void loadHook() {
-		Exception loadException = null;
+		skyblockAPI = getHook(); 
+		skyblockAPICached = new SkyblockAPICached(skyblockAPI);
+	}
+	
+	public SkyblockAPIHook getHook() {
+		NoClassDefFoundError loadException = null;
+		SkyblockAPIHook skyblockAPI = null;
+		
 		for(HookInfo hookInfo : HookInfo.values()) {
 			String pluginName = hookInfo.name().replace("Legacy", "");
 			if(Bukkit.getServer().getPluginManager().isPluginEnabled(pluginName)) {
 				try {
-					skyblockAPI = (SkyblockAPIHook) hookInfo.getHookClass().newInstance();
+					try {
+						skyblockAPI = (SkyblockAPIHook) hookInfo.getHookClass().newInstance();
+					}catch(NoClassDefFoundError e) {
+						loadException = e;
+						continue;
+					}
 					sendConsole(String.format("&aUsing %s as SkyBlock-Plugin, hook class: %s", pluginName, hookInfo.getHookClass().getName()));
 					break;
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					loadException = e;
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -146,7 +157,7 @@ public class CustomOreGen extends JavaPlugin {
 			skyblockAPI = new HookVanilla();
 		}
 		
-		skyblockAPICached = new SkyblockAPICached(skyblockAPI);
+		return skyblockAPI;
 	}
 
 	/**
