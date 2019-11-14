@@ -124,21 +124,24 @@ public class CustomOreGen extends JavaPlugin {
 	 * Acquires the corresponding skyblock hook class
 	 */
 	private void loadHook() {
+		Exception loadException = null;
 		for(HookInfo hookInfo : HookInfo.values()) {
-			String pluginName = hookInfo.name();
+			String pluginName = hookInfo.name().replace("Legacy", "");
 			if(Bukkit.getServer().getPluginManager().isPluginEnabled(pluginName)) {
-				sendConsole(String.format("&aUsing %s as SkyBlock-Plugin", pluginName));
 				try {
 					skyblockAPI = (SkyblockAPIHook) hookInfo.getHookClass().newInstance();
+					sendConsole(String.format("&aUsing %s as SkyBlock-Plugin, hook class: %s", pluginName, hookInfo.getHookClass().getName()));
 					break;
-				} catch (InstantiationException | IllegalAccessException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					loadException = e;
 				}
 			}
 		}
 		
 		if(skyblockAPI == null) {
+			if(loadException != null)
+				loadException.printStackTrace();
 			sendConsole("§cYou are not using any supported skyblock plugin! Will use the vanilla range check hook instead.");
 			skyblockAPI = new HookVanilla();
 		}
