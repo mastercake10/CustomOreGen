@@ -26,7 +26,7 @@ public class HookSuperiorSkyblock implements SkyblockAPIHook {
 
 	@Override
 	public Optional<UUID> getIslandOwner(Location loc) {
-		if(SuperiorSkyblockAPI.getIslandAt(loc) != null) {
+		if(SuperiorSkyblockAPI.getIslandAt(loc) != null && SuperiorSkyblockAPI.getIslandAt(loc).getOwner() != null) {
 			return Optional.of(SuperiorSkyblockAPI.getIslandAt(loc).getOwner().getUniqueId());
 		}else {
 			return Optional.empty();
