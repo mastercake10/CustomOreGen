@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>xyz.spaceio</groupId>
 	<artifactId>CustomOreGen</artifactId>
-	<version>1.3.22-SNAPSHOT</version>
+	<version>1.3.23-SNAPSHOT</version>
 	<repositories>
 		<!-- Spigot repository -->
 		<repository>
@@ -30,6 +30,11 @@
 		<repository>
 			<id>codemc-repo</id>
 			<url>https://repo.codemc.org/repository/maven-public/</url>
+		</repository>
+		<!-- PlotSquared repo -->
+		<repository>
+			<id>athion-repo</id>
+			<url>http://ci.athion.net/job/PlotSquared-Breaking/ws/mvn/</url>
 		</repository>
 		<!-- Placeholder repository -->
 		<repository>
@@ -119,13 +124,15 @@
 		<dependency>
 			<groupId>com.github.intellectualsites.plotsquared</groupId>
 			<artifactId>PlotSquared-API</artifactId>
-			<version>4.369-SNAPSHOT</version>
+			<version>latest</version>
+			<scope>provided</scope>
 		</dependency>
 		<!-- PlotSquared Legacy -->
 		<dependency>
 			<groupId>com.plotsquared</groupId>
 			<artifactId>plotsquared-api</artifactId>
 			<version>18.12.21-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<!-- Lands -->
 		<dependency>

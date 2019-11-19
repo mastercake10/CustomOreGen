@@ -39,10 +39,7 @@ public class HookPlotSquared implements SkyblockAPIHook {
 	}
 	
 	private com.github.intellectualsites.plotsquared.plot.object.Location getPSLocation(Location bukkitLoc) {
-		com.github.intellectualsites.plotsquared.plot.object.Location loc = new com.github.intellectualsites.plotsquared.plot.object.Location();
-		loc.setX(bukkitLoc.getBlockX());
-		loc.setY(bukkitLoc.getBlockY());
-		loc.setZ(bukkitLoc.getBlockZ());
+		com.github.intellectualsites.plotsquared.plot.object.Location loc = new com.github.intellectualsites.plotsquared.plot.object.Location(bukkitLoc.getWorld().getName(), bukkitLoc.getBlockX(), bukkitLoc.getBlockY(), bukkitLoc.getBlockZ());
 		
 		return loc;
 	}
