@@ -63,7 +63,7 @@ public class Events implements Listener {
 				}
 			}
 
-			if (toType != null || b.getType() == Material.AIR && (generatesCobble(fromType, b))) {
+			if ((toType != null || b.getType() == Material.AIR) && (generatesCobble(fromType, b))) {
 				OfflinePlayer p = plugin.getOwner(b.getLocation());
 				if (p == null)
 					return;
