@@ -76,9 +76,6 @@ public class Events implements Listener {
 				if (Material.getMaterial(winning.getName()) == null)
 					return;
 
-				if (Material.getMaterial(winning.getName()).equals(Material.COBBLESTONE) && winning.getDamage() == 0) {
-					return;
-				}
 				event.setCancelled(true);
 
 				//b.setType(Material.getMaterial(winning.getName()));
@@ -93,11 +90,10 @@ public class Events implements Listener {
 					}
 	
 				}else {
-					Bukkit.getScheduler().runTask(plugin, () -> {
 						b.setType(Material.getMaterial(winning.getName()));
 						b.getState().update(true);
 						b.getWorld().playSound(b.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1f, 10f);
-					});
+
 				}
 				//b.setData(winning.getDamage(), true);
 			}

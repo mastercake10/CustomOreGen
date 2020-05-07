@@ -1,6 +1,5 @@
 package xyz.spaceio.hooks;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 public class HookVanilla implements SkyblockAPIHook{
@@ -27,10 +25,10 @@ public class HookVanilla implements SkyblockAPIHook{
 	public Optional<UUID> getIslandOwner(Location loc) {
 		Optional<UUID> optional = Optional.empty();
 		
-		List<Entity> list = loc.getWorld().getNearbyEntities(loc, 5, 5, 5).stream()
-			.filter(e -> e instanceof Player)
+		List<Player> list = loc.getWorld().getPlayers().stream()
 			.sorted(Comparator.comparingDouble(e -> e.getLocation().distance(loc)))
 			.collect(Collectors.toList());
+		
 		
 		if(list.size() > 0) {
 			optional = Optional.of(((Player) list.get(0)).getUniqueId());
