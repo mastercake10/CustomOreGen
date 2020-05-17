@@ -47,7 +47,7 @@ public class Events implements Listener {
 		if (plugin.getDisabledWorlds().contains(event.getBlock().getLocation().getWorld().getName())) {
 			return;
 		}
-
+		
 		Type fromType = this.getType(event.getBlock());
 		
 		if (fromType != null && event.getFace() != BlockFace.DOWN) {
@@ -62,7 +62,7 @@ public class Events implements Listener {
 					return;
 				}
 			}
-
+			
 			if ((toType != null || b.getType() == Material.AIR) && (generatesCobble(fromType, b))) {
 				OfflinePlayer p = plugin.getOwner(b.getLocation());
 				if (p == null)
@@ -154,13 +154,13 @@ public class Events implements Listener {
 				if(level.getLevel() == 0) {
 					if(level.getMaterial() == Material.WATER) {
 						return Type.WATER_STAT;
-					}else {
+					}else if(level.getMaterial() == Material.LAVA) {
 						return Type.LAVA_STAT;
 					}
 				}else {
 					if(level.getMaterial() == Material.WATER) {
 						return Type.WATER;
-					}else {
+					}else if(level.getMaterial() == Material.LAVA) {
 						return Type.LAVA;
 					}
 				}
