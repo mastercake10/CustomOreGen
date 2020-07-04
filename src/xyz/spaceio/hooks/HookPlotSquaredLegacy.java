@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 import com.intellectualcrafters.plot.api.PlotAPI;
 
@@ -32,5 +33,11 @@ public class HookPlotSquaredLegacy implements SkyblockAPIHook {
 	@Override
 	public String[] getSkyBlockWorldNames() {
 		return api.getPlotWorlds();
+	}
+	
+	@Override
+	public void sendBlockAcknowledge(Block block) {
+		// TODO Auto-generated method stub
+		
 	}
 }

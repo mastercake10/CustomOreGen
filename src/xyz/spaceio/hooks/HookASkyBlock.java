@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
 
@@ -33,5 +34,12 @@ public class HookASkyBlock implements SkyblockAPIHook {
 	public String[] getSkyBlockWorldNames() {
 		return new String[] { api.getIslandWorld().getName() };
 	}
+
+	@Override
+	public void sendBlockAcknowledge(Block block) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 
 }

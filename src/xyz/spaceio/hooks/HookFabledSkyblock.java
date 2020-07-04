@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 
 import com.songoda.skyblock.SkyBlock;
 import com.songoda.skyblock.island.Island;
@@ -57,6 +58,12 @@ public class HookFabledSkyblock implements SkyblockAPIHook{
 			return Bukkit.getWorlds().stream().filter(w -> api.getWorldManager().isIslandWorld(w)).map(w -> w.getName()).toArray(String[]::new);
 		}
 		return null;
+	}
+	
+	@Override
+	public void sendBlockAcknowledge(Block block) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 import pl.islandworld.IslandWorld;
 import pl.islandworld.entity.SimpleIsland;
@@ -38,6 +39,12 @@ public class HookIslandWorld implements SkyblockAPIHook {
 	@Override
 	public String[] getSkyBlockWorldNames() {
 		return new String[] { api.getIslandWorld().getName() };
+	}
+	
+	@Override
+	public void sendBlockAcknowledge(Block block) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

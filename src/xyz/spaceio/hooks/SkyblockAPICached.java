@@ -1,12 +1,13 @@
 package xyz.spaceio.hooks;
 
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -65,5 +66,9 @@ public class SkyblockAPICached {
 	
 	public String[] getSkyBlockWorldNames() {
 		return hook.getSkyBlockWorldNames();
+	}
+	
+	public void sendBlockAcknowledge(Block block) {
+		hook.sendBlockAcknowledge(block);
 	}
 }

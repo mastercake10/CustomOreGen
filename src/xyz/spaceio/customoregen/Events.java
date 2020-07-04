@@ -84,6 +84,7 @@ public class Events implements Listener {
 				if(useLegacyBlockPlaceMethod) {
 					try {
 						legacyBlockPlaceMethod.invoke(b, Material.getMaterial(winning.getName()).getId() , winning.getDamage(), true);
+						plugin.getSkyblockAPICached().sendBlockAcknowledge(b);
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -93,7 +94,7 @@ public class Events implements Listener {
 						b.setType(Material.getMaterial(winning.getName()));
 						b.getState().update(true);
 						b.getWorld().playSound(b.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1f, 10f);
-
+						plugin.getSkyblockAPICached().sendBlockAcknowledge(b);
 				}
 				//b.setData(winning.getDamage(), true);
 			}

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 public interface SkyblockAPIHook {
 	/**
@@ -30,4 +31,10 @@ public interface SkyblockAPIHook {
 	 * @return the names of the skyblock worlds
 	 */
 	public String[] getSkyBlockWorldNames();
+	
+	/*
+	 * Calls the specific SkyBlock-API to make it aware of a block placement
+	 * 
+	 */
+	public void sendBlockAcknowledge(Block block);
 }

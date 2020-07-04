@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class HookVanilla implements SkyblockAPIHook{
@@ -40,6 +41,12 @@ public class HookVanilla implements SkyblockAPIHook{
 	@Override
 	public String[] getSkyBlockWorldNames() {
 		return Bukkit.getWorlds().stream().map(w -> w.getName()).toArray(String[]::new);
+		
+	}
+	
+	@Override
+	public void sendBlockAcknowledge(Block block) {
+		// TODO Auto-generated method stub
 		
 	}
 }

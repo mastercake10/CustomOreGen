@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 import com.github.intellectualsites.plotsquared.api.PlotAPI;
 
@@ -42,5 +43,11 @@ public class HookPlotSquared implements SkyblockAPIHook {
 		com.github.intellectualsites.plotsquared.plot.object.Location loc = new com.github.intellectualsites.plotsquared.plot.object.Location(bukkitLoc.getWorld().getName(), bukkitLoc.getBlockX(), bukkitLoc.getBlockY(), bukkitLoc.getBlockZ());
 		
 		return loc;
+	}
+	
+	@Override
+	public void sendBlockAcknowledge(Block block) {
+		// TODO Auto-generated method stub
+		
 	}
 }

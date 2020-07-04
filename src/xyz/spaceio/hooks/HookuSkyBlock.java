@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 import us.talabrek.ultimateskyblock.api.uSkyBlockAPI;
 
@@ -38,4 +39,9 @@ public class HookuSkyBlock implements SkyblockAPIHook {
 		return new String[] { api.getConfig().getString("options.general.worldName") };
 	}
 
+	@Override
+	public void sendBlockAcknowledge(Block block) {
+		// TODO Auto-generated method stub
+		
+	}
 }

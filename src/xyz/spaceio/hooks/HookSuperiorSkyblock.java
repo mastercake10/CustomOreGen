@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 
@@ -36,6 +37,13 @@ public class HookSuperiorSkyblock implements SkyblockAPIHook {
 	@Override
 	public String[] getSkyBlockWorldNames() {
 		return new String[] {SuperiorSkyblockAPI.getIslandsWorld().getName()};
+	}
+	
+	@Override
+	public void sendBlockAcknowledge(Block block) {
+		if(SuperiorSkyblockAPI.getIslandAt(block.getLocation()) != null) {
+			SuperiorSkyblockAPI.getIslandAt(block.getLocation()).handleBlockPlace(block);	
+		}
 	}
 
 }

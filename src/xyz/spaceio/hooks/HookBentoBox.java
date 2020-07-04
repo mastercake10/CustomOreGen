@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.database.objects.Island;
@@ -54,6 +55,12 @@ public class HookBentoBox implements SkyblockAPIHook{
 	@Override
 	public String[] getSkyBlockWorldNames() {
 		return api.getIWM().getOverWorlds().stream().map(w -> new String[]{w.getName(), w.getName() + "_nether", w.getName() + "_the_end"}).flatMap(s -> Arrays.stream(s)).toArray(String[]::new);
+	}
+	
+	@Override
+	public void sendBlockAcknowledge(Block block) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
