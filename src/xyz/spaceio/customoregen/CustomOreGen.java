@@ -72,6 +72,11 @@ public class CustomOreGen extends JavaPlugin {
 	 * Prefix for the clogger
 	 */
 	private final String PREFIX = "§6[CustomOreGen] ";
+	
+	/*
+	 * Main event class
+	 */
+	private Events events;
 
 
 	@Override
@@ -79,8 +84,6 @@ public class CustomOreGen extends JavaPlugin {
 		clogger = getServer().getConsoleSender();
 		
 		PluginManager pm = Bukkit.getPluginManager();
-		
-		pm.registerEvents(new Events(this), this);
 
 		this.loadHook();
 
@@ -93,6 +96,10 @@ public class CustomOreGen extends JavaPlugin {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		events = new Events(this);
+		
+		pm.registerEvents(events, this);
 
 		// some persisting saving stuff
 		
@@ -197,10 +204,21 @@ public class CustomOreGen extends JavaPlugin {
 
 		return p;
 	}
+	
+	/**
+	 * Gets the skyblock hook name in use
+	 * 
+	 * @return The name of the hook class
+	 */
+	public String getHookName() {
+		return this.skyblockAPI.getClass().getName();
+	}
 
 	public void reload() throws IOException {
 		reloadConfig();
 		configHandler.loadConfig();
+		
+		events.load();
 	}
 
 	/**
