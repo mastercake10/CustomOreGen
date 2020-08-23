@@ -28,8 +28,14 @@ public class Events implements Listener {
 	private boolean useLegacyBlockPlaceMethod;
 	private Method legacyBlockPlaceMethod;
 	
+	private boolean enableStoneGenerator;
+	
 	public Events(CustomOreGen customOreGen) {
 		this.plugin = customOreGen;
+		load();
+	}
+	
+	public void load() {
 		this.useLegacyBlockPlaceMethod = Arrays.stream(Block.class.getMethods()).anyMatch(method -> method.getName() == "setTypeIdAndData");
 		if(this.useLegacyBlockPlaceMethod) {
 			try {
@@ -39,6 +45,7 @@ public class Events implements Listener {
 				e.printStackTrace();
 			}
 		}
+		this.enableStoneGenerator = plugin.getConfig().getBoolean("enable-stone-generator");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -50,12 +57,18 @@ public class Events implements Listener {
 		
 		Type fromType = this.getType(event.getBlock());
 		
-		if (fromType != null && event.getFace() != BlockFace.DOWN) {
+		if (fromType != null) {
+			if (!enableStoneGenerator) {
+				if(event.getFace() == BlockFace.DOWN) {
+					return;
+				}
+			}
 			Block b = event.getToBlock();
 			Type toType = this.getType(event.getToBlock());
 			
 			Location fromLoc = b.getLocation();
 			
+
 			// fix for (lava -> water)
 			if (fromType == Type.LAVA || fromType == Type.LAVA_STAT) {
 				if(!isSurroundedByWater(fromLoc)){
