@@ -230,13 +230,14 @@ public class CustomOreGen extends JavaPlugin {
 	 * @return				the generator config
 	 */
 	public GeneratorConfig getGeneratorConfigForPlayer(OfflinePlayer offlinePlayer, String world) {
+		
 		GeneratorConfig gc = null;
 		int id = 0;
+		
 		if (offlinePlayer == null) {
 			gc = generatorConfigs.get(0);
 			cacheOreGen(offlinePlayer.getUniqueId(), id);
 		} else {
-
 			int islandLevel = getLevel(offlinePlayer.getUniqueId(), world);
 			if (offlinePlayer.isOnline()) {
 				Player realP = offlinePlayer.getPlayer();
@@ -259,9 +260,19 @@ public class CustomOreGen extends JavaPlugin {
 				gc = getCachedGeneratorConfig(offlinePlayer.getUniqueId());
 			}
 		}
+		
 		if (id > 0) {
 			cacheOreGen(offlinePlayer.getUniqueId(), id - 1);
 		}
+		
+		// fail over if there wasn't found any applicable generator but still no permission and level 0
+		if (gc == null && generatorConfigs.get(0) != null 
+				&& (generatorConfigs.get(0).permission == ";" || generatorConfigs.get(0).permission == "" || generatorConfigs.get(0).permission.length() == 0)
+				&& generatorConfigs.get(0).unlock_islandLevel == 0) {
+			
+			gc = generatorConfigs.get(0);
+		}
+		
 		return gc;
 	}
 
