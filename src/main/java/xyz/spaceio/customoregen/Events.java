@@ -26,6 +26,7 @@ public class Events implements Listener {
 	private CustomOreGen plugin;
 	
 	private boolean useLegacyBlockPlaceMethod;
+	private boolean useLevelledClass;
 	private Method legacyBlockPlaceMethod;
 	
 	private boolean enableStoneGenerator;
@@ -46,6 +47,13 @@ public class Events implements Listener {
 			}
 		}
 		this.enableStoneGenerator = plugin.getConfig().getBoolean("enable-stone-generator");
+		
+		try {
+			Class.forName("org.bukkit.block.data.Levelled");
+			useLevelledClass = true;
+		} catch( ClassNotFoundException e ) {
+			useLevelledClass = false;
+		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -161,8 +169,7 @@ public class Events implements Listener {
 	}
 	
 	public Type getType(Block b) {
-		try {
-			Class.forName("org.bukkit.block.data.Levelled");
+		if(useLevelledClass) {
 			if(b.getBlockData() != null && b.getBlockData() instanceof org.bukkit.block.data.Levelled) {
 				org.bukkit.block.data.Levelled level = (org.bukkit.block.data.Levelled) b.getBlockData();
 				if(level.getLevel() == 0) {
@@ -179,7 +186,7 @@ public class Events implements Listener {
 					}
 				}
 			}
-		} catch( ClassNotFoundException e ) {
+		} else {
 			switch(b.getType().name()) {
 				case "WATER":
 					return Type.WATER;
