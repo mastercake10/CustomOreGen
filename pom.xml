@@ -4,8 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>xyz.spaceio</groupId>
 	<artifactId>CustomOreGen</artifactId>
-	<version>1.3.30-SNAPSHOT</version>
+	<version>1.3.32-SNAPSHOT</version>
 	<repositories>
+		<!-- SpaceIO repository -->
+		<repository>
+			<id>spaceio-releases</id>
+			<url>http://37.221.195.48:8083/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
 		<!-- Spigot repository -->
 		<repository>
 			<id>spigot-repo</id>
@@ -16,15 +25,6 @@
 			<id>bintray-tastybento-maven-repo</id>
 			<name>bintray</name>
 			<url>http://dl.bintray.com/tastybento/maven-repo</url>
-		</repository>
-		<!-- USkyBlock repository -->
-		<repository>
-			<id>uSkyBlock-mvn-repo</id>
-			<url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
 		</repository>
 		<!-- CodeMC repository -->
 		<repository>
@@ -41,15 +41,15 @@
 			<id>placeholderapi</id>
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
-		<!-- SpaceIO repository -->
-		<repository>
-			<id>spaceio-snapshots</id>
-			<url>https://hub.spaceio.xyz/repository/maven-snapshots/</url>
-		</repository>
 		<!-- SpaceIO private repository -->
 		<repository>
 			<id>private-snapshots</id>
 			<url>https://hub.spaceio.xyz/repository/private-snapshots/</url>
+		</repository>
+		<!-- USkyBlock repository -->
+		<repository>
+			<id>uSkyBlock-mvn-repo</id>
+			<url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -110,7 +110,7 @@
 		<dependency>
 			<groupId>com.bgsoftware</groupId>
 			<artifactId>SuperiorSkyblock</artifactId>
-			<version>1.4.1-SNAPSHOT</version>
+			<version>b94</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- SpaceSkyblock -->
@@ -177,6 +177,15 @@
 		</resources>
 		<plugins>
 			<!-- Sets the Java version to 8 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
