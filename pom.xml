@@ -8,8 +8,8 @@
 	<repositories>
 		<!-- SpaceIO repository -->
 		<repository>
-			<id>spaceio-releases</id>
-			<url>http://37.221.195.48:8083/snapshots/</url>
+			<id>spaceio-repo</id>
+			<url>https://repo.spaceio.xyz/repository/maven-public/</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
@@ -230,12 +230,12 @@
 		<repository>
 			<id>spaceio-releases</id>
 			<name>releases</name>
-			<url>https://hub.spaceio.xyz/repository/maven-releases/</url>
+			<url>https://repo.spaceio.xyz/repository/maven-releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>spaceio-snapshots</id>
 			<name>snapshots</name>
-			<url>https://hub.spaceio.xyz/repository/maven-snapshots/</url>
+			<url>https://repo.spaceio.xyz/repository/maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
