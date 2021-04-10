@@ -1,9 +1,11 @@
 package xyz.spaceio.hooks;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
@@ -36,7 +38,11 @@ public class HookSuperiorSkyblock implements SkyblockAPIHook {
 
 	@Override
 	public String[] getSkyBlockWorldNames() {
-		return SuperiorSkyblockAPI.getGrid().getRegisteredWorlds().stream().map(w -> w.getName()).toArray(String[]::new);
+		
+		List<World> worlds = SuperiorSkyblockAPI.getGrid().getRegisteredWorlds();
+		worlds.add(SuperiorSkyblockAPI.getSpawnIsland().getVisitorsLocation().getWorld());
+		
+		return worlds.stream().map(w -> w.getName()).toArray(String[]::new);
 	}
 	
 	@Override
