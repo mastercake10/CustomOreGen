@@ -10,10 +10,6 @@
 		<repository>
 			<id>spaceio-repo</id>
 			<url>https://repo.spaceio.xyz/repository/maven-public/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
 		</repository>
 		<!-- Spigot repository -->
 		<repository>
@@ -51,6 +47,11 @@
 			<id>uSkyBlock-mvn-repo</id>
 			<url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
 		</repository>
+		<!-- SuperiorSkyblock repo -->
+	    <repository>
+	        <id>bg-repo</id>
+	        <url>https://repo.bg-software.com/repository/api/</url>
+	    </repository>
 	</repositories>
 	<dependencies>
 		<!--Spigot API -->
@@ -107,12 +108,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- SuperiorSkyblock -->
-		<dependency>
-			<groupId>com.bgsoftware</groupId>
-			<artifactId>SuperiorSkyblock</artifactId>
-			<version>b94</version>
-			<scope>provided</scope>
-		</dependency>
 		<!-- SpaceSkyblock -->
 		<dependency>
 			<groupId>xyz.spaceio.skyblock</groupId>
@@ -221,7 +216,7 @@
 				<version>2.4</version>
 				<configuration>
 					<outputDirectory>${dir}</outputDirectory>
-					<finalName>${project.name}-${project.version}</finalName>
+					<finalName>${project.name}-1.15.26-SNAPSHOT</finalName>
 				</configuration>
 			</plugin>
 		</plugins>
