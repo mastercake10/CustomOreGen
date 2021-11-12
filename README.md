@@ -22,7 +22,7 @@ A neat solution for modifying the default ore generator of minecraft. The must-h
 - uSkyblock
 
 ### Maven
-```yml
+```xml
 		<repository>
 			<id>spaceio-repo</id>
 			<url>https://repo.spaceio.xyz/repository/maven-public/</url>
