@@ -64,10 +64,10 @@ public class Events implements Listener {
 		}
 		
 		Type fromType = this.getType(event.getBlock());
-		
+
 		if (fromType != null) {
 			if (!enableStoneGenerator) {
-				if(event.getFace() == BlockFace.DOWN) {
+				if(event.getFace() == BlockFace.DOWN || fromType == Type.WATER_STAT) {
 					return;
 				}
 			}
@@ -76,7 +76,6 @@ public class Events implements Listener {
 			
 			Location fromLoc = b.getLocation();
 			
-
 			// fix for (lava -> water)
 			if (fromType == Type.LAVA || fromType == Type.LAVA_STAT) {
 				if(!isSurroundedByWater(fromLoc)){
@@ -84,7 +83,14 @@ public class Events implements Listener {
 				}
 			}
 			
-			if ((toType != null || b.getType() == Material.AIR) && (generatesCobble(fromType, b))) {
+			if ((toType != null || b.getType() == Material.AIR) && (this.generatesCobble(fromType, b))) {
+				
+				if (this.getTouchingFace(fromType, b) == BlockFace.DOWN) {
+					b = b.getLocation().add(0, -1, 0).getBlock();
+				} else {
+					event.setCancelled(true);
+				}
+				
 				OfflinePlayer p = plugin.getOwner(b.getLocation());
 				if (p == null)
 					return;
@@ -97,7 +103,6 @@ public class Events implements Listener {
 				if (Material.getMaterial(winning.getName()) == null)
 					return;
 
-				event.setCancelled(true);
 
 				//b.setType(Material.getMaterial(winning.getName()));
 				// <Block>.setData(...) is deprecated, but there is no
@@ -203,16 +208,23 @@ public class Events implements Listener {
 
 	private final BlockFace[] faces = { BlockFace.SELF, BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST,
 			BlockFace.SOUTH, BlockFace.WEST };
-
-	public boolean generatesCobble(Type type, Block b) {
+	
+	public BlockFace getTouchingFace(Type type, Block b) {
 		Type mirrorType1 = (type == Type.WATER_STAT) || (type == Type.WATER) ? Type.LAVA_STAT : Type.WATER_STAT;
 		Type mirrorType2 = (type == Type.WATER_STAT) || (type == Type.WATER) ? Type.LAVA : Type.WATER;
 		for (BlockFace face : this.faces) {
 			Block r = b.getRelative(face, 1);
 			if ((this.getType(r) == mirrorType1) || (this.getType(r) == mirrorType2)) {
-				return true;
+				return face;
 			}
 		}
+		return null;
+	}
+	public boolean generatesCobble(Type type, Block b) {
+		if (this.getTouchingFace(type, b) != null) {
+			return true;
+		}
+		
 		return false;
 	}
 }
