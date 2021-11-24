@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -110,7 +111,6 @@ public class Events implements Listener {
 				if(useLegacyBlockPlaceMethod) {
 					try {
 						legacyBlockPlaceMethod.invoke(b, Material.getMaterial(winning.getName()).getId() , winning.getDamage(), true);
-						plugin.getSkyblockAPICached().sendBlockAcknowledge(b);
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -119,9 +119,12 @@ public class Events implements Listener {
 				}else {
 						b.setType(Material.getMaterial(winning.getName()));
 						b.getState().update(true);
-						b.getWorld().playSound(b.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 1f, 10f);
-						plugin.getSkyblockAPICached().sendBlockAcknowledge(b);
 				}
+				
+				b.getWorld().playSound(b.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.5f, 2.6f + ((float) Math.random() - (float) Math.random()) * 0.8f);
+				b.getWorld().spawnParticle(Particle.SMOKE_LARGE, b.getLocation().getBlockX() + 0.5D, b.getLocation().getBlockY() + 0.25D, b.getLocation().getBlockZ() + 0.5D, 8, 0.5D, 0.25D, 0.5D, 0.0D);
+				
+				plugin.getSkyblockAPICached().sendBlockAcknowledge(b);
 				//b.setData(winning.getDamage(), true);
 			}
 		}
