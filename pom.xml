@@ -108,6 +108,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- SuperiorSkyblock -->
+	    <dependency>
+	        <groupId>com.bgsoftware</groupId>
+	        <artifactId>SuperiorSkyblockAPI</artifactId>
+	        <version>latest</version>
+	    </dependency>
 		<!-- SpaceSkyblock -->
 		<dependency>
 			<groupId>xyz.spaceio.skyblock</groupId>
