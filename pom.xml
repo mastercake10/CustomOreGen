@@ -221,7 +221,7 @@
 				<version>2.4</version>
 				<configuration>
 					<outputDirectory>${dir}</outputDirectory>
-					<finalName>${project.name}-1.15.26-SNAPSHOT</finalName>
+					<finalName>${project.name}-${project.version}</finalName>
 				</configuration>
 			</plugin>
 		</plugins>
