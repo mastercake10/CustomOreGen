@@ -1,12 +1,14 @@
 package xyz.spaceio.hooks;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
-import com.github.intellectualsites.plotsquared.api.PlotAPI;
+import com.plotsquared.core.PlotAPI;
+
 
 
 public class HookPlotSquared implements SkyblockAPIHook {
@@ -25,24 +27,23 @@ public class HookPlotSquared implements SkyblockAPIHook {
 	@Override
 	public Optional<UUID> getIslandOwner(Location loc) {
 		Optional<UUID> optional = Optional.empty();
-	
-		
-		if(api.getPlotSquared().getApplicablePlotArea(getPSLocation(loc)).getPlotCount() > 0) {
-			UUID owner = api.getPlotSquared().getApplicablePlotArea(getPSLocation(loc)).getPlots().iterator().next().getOwner();
-			optional = Optional.of(owner);
+
+		if(api.getPlotSquared().getPlotAreaManager().getApplicablePlotArea(getPSLocation(loc)).getPlotCount() > 0) {
+			Set<UUID> owners = api.getPlotSquared().getPlotAreaManager().getApplicablePlotArea(getPSLocation(loc)).getPlots().iterator().next().getOwners();
+			if(!owners.isEmpty()) {
+				Optional.of(owners.iterator().next());
+			}
 		}
 		return optional;
 	}
 
 	@Override
 	public String[] getSkyBlockWorldNames() {
-		return api.getPlotSquared().worlds.getConfigurationSection("worlds").getKeys(false).stream().toArray(String[]::new);
+		return api.getPlotSquared().getWorldConfiguration().getConfigurationSection("worlds").getKeys(false).stream().toArray(String[]::new);
 	}
 	
-	private com.github.intellectualsites.plotsquared.plot.object.Location getPSLocation(Location bukkitLoc) {
-		com.github.intellectualsites.plotsquared.plot.object.Location loc = new com.github.intellectualsites.plotsquared.plot.object.Location(bukkitLoc.getWorld().getName(), bukkitLoc.getBlockX(), bukkitLoc.getBlockY(), bukkitLoc.getBlockZ());
-		
-		return loc;
+	private com.plotsquared.core.location.Location getPSLocation(Location bukkitLoc) {
+		return com.plotsquared.core.location.Location.at(bukkitLoc.getWorld().getName(), bukkitLoc.getBlockX(), bukkitLoc.getBlockY(), bukkitLoc.getBlockZ());
 	}
 	
 	@Override
