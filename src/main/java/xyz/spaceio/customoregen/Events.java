@@ -31,6 +31,8 @@ public class Events implements Listener {
 	private Method legacyBlockPlaceMethod;
 	
 	private boolean enableStoneGenerator;
+	private boolean enableSoundEffect;
+	private boolean enableParticleEffect;
 	
 	public Events(CustomOreGen customOreGen) {
 		this.plugin = customOreGen;
@@ -48,6 +50,8 @@ public class Events implements Listener {
 			}
 		}
 		this.enableStoneGenerator = plugin.getConfig().getBoolean("enable-stone-generator");
+		this.enableSoundEffect = plugin.getConfig().getBoolean("enable-sound-effect");
+		this.enableParticleEffect = plugin.getConfig().getBoolean("enable-particle-effect");
 		
 		try {
 			Class.forName("org.bukkit.block.data.Levelled");
@@ -121,8 +125,10 @@ public class Events implements Listener {
 						b.getState().update(true);
 				}
 				
-				b.getWorld().playSound(b.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.5f, 2.6f + ((float) Math.random() - (float) Math.random()) * 0.8f);
-				b.getWorld().spawnParticle(Particle.SMOKE_LARGE, b.getLocation().getBlockX() + 0.5D, b.getLocation().getBlockY() + 0.25D, b.getLocation().getBlockZ() + 0.5D, 8, 0.5D, 0.25D, 0.5D, 0.0D);
+				if(enableSoundEffect)
+					b.getWorld().playSound(b.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.5f, 2.6f + ((float) Math.random() - (float) Math.random()) * 0.8f);
+				if(enableParticleEffect)
+					b.getWorld().spawnParticle(Particle.SMOKE_LARGE, b.getLocation().getBlockX() + 0.5D, b.getLocation().getBlockY() + 0.25D, b.getLocation().getBlockZ() + 0.5D, 8, 0.5D, 0.25D, 0.5D, 0.0D);
 				
 				plugin.getSkyblockAPICached().sendBlockAcknowledge(b);
 				//b.setData(winning.getDamage(), true);
