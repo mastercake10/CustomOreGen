@@ -30,11 +30,6 @@
 			<id>placeholderapi</id>
 			<url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
-		<!-- SpaceIO private repository -->
-		<repository>
-			<id>private-snapshots</id>
-			<url>https://hub.spaceio.xyz/repository/private-snapshots/</url>
-		</repository>
 		<!-- USkyBlock repository -->
 		<repository>
 			<id>uSkyBlock-mvn-repo</id>
