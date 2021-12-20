@@ -16,11 +16,7 @@
 			<id>codemc-repo</id>
 			<url>https://repo.codemc.org/repository/maven-public/</url>
 		</repository>
-		<!-- PlotSquared repos -->
-		<repository>
-			<id>athion-repo</id>
-			<url>http://ci.athion.net/job/PlotSquared-Breaking/ws/mvn/</url>
-		</repository>
+		<!-- PlotSquared repo -->
 		<repository>
 			<id>intellectualsites snapshots</id>
 			<url>https://mvn.intellectualsites.com/content/repositories/snapshots/</url>
@@ -32,7 +28,7 @@
 		<!-- Placeholder repository -->
 		<repository>
 			<id>placeholderapi</id>
-			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+			<url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
 		<!-- SpaceIO private repository -->
 		<repository>
@@ -49,12 +45,6 @@
 	        <id>bg-repo</id>
 	        <url>https://repo.bg-software.com/repository/api/</url>
 	    </repository>
-   		<!-- Tastybento repository -->
-		<repository>
-			<id>bintray-tastybento-maven-repo</id>
-			<name>bintray</name>
-			<url>http://dl.bintray.com/tastybento/maven-repo</url>
-		</repository>
 		<!-- SpaceIO repository -->
 		<repository>
 			<id>spaceio-repo</id>
@@ -78,15 +68,9 @@
 		</dependency>
 		<!-- ASkyBlock -->
 		<dependency>
-			<groupId>com.wasteofplastic</groupId>
-			<artifactId>askyblock</artifactId>
-			<version>3.0.9</version>
-		</dependency>
-		<!-- AcidIsland -->
-		<dependency>
-			<groupId>com.wasteofplastic</groupId>
-			<artifactId>acidisland</artifactId>
-			<version>3.0.9</version>
+		  <groupId>com.wasteofplastic</groupId>
+		  <artifactId>askyblock</artifactId>
+		  <version>3.0.9.4</version>
 		</dependency>
 		<!-- USkyblock -->
 		<dependency>
@@ -116,11 +100,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- SuperiorSkyblock -->
-	    <dependency>
-	        <groupId>com.bgsoftware</groupId>
-	        <artifactId>SuperiorSkyblockAPI</artifactId>
-	        <version>latest</version>
-	    </dependency>
+		<dependency>
+		  <groupId>com.bgsoftware</groupId>
+		  <artifactId>SuperiorSkyblockAPI</artifactId>
+		  <version>latest</version>
+		</dependency>
 		<!-- SpaceSkyblock -->
 		<dependency>
 			<groupId>xyz.spaceio.skyblock</groupId>

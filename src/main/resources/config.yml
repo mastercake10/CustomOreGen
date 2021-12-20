@@ -11,9 +11,6 @@
 # Enable this when you also want random blocks from stone generators (lava floats on water vertically)
 enable-stone-generator: false
 
-# Enables the hiss sound effect when a block was generated
-enable-sound-effect: true
-
 # Enables the smoke particle effect when a block was generated
 enable-particle-effect: true
 
