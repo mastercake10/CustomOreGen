@@ -59,6 +59,11 @@ public class Events implements Listener {
 		} catch( ClassNotFoundException e ) {
 			useLevelledClass = false;
 		}
+		
+		if(enableSoundEffect) {
+			// disabling sound effects when enum value not present
+			enableSoundEffect = Arrays.asList(Sound.values()).stream().map(Sound::name).anyMatch(s -> s.equals("BLOCK_FIRE_EXTINGUISH"));
+		}
 	}
 
 	@SuppressWarnings("deprecation")
