@@ -4,9 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredListener;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 
@@ -14,8 +18,17 @@ import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 public class HookSuperiorSkyblock implements SkyblockAPIHook {
 
 
-	public HookSuperiorSkyblock() {
-
+	public HookSuperiorSkyblock(Plugin plugin) {
+		for(RegisteredListener listener : HandlerList.getRegisteredListeners(Bukkit.getPluginManager().getPlugin("SuperiorSkyblock2"))) {
+			try {
+				if(listener.getListener().getClass() == Class.forName("com.bgsoftware.superiorskyblock.module.generators.listeners.GeneratorsListener")){
+					HandlerList.unregisterAll(listener.getListener());
+					plugin.getLogger().info(String.format("%s: Unregistered inbuilt-generator from Plugin (%s) to use this one", this.getClass().getSimpleName(), listener.getListener().getClass().getName()));
+				}
+			} catch (ClassNotFoundException e) {
+				plugin.getLogger().warning(String.format("%s: Generator class for inbuilt-generator not found (%s)", this.getClass().getSimpleName(), listener.getListener().getClass().getName()));
+			}
+		}
 	}
 
 	@Override
