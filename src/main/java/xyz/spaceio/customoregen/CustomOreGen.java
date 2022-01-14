@@ -1,6 +1,8 @@
 package xyz.spaceio.customoregen;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -136,24 +138,26 @@ public class CustomOreGen extends JavaPlugin {
 	}
 	
 	public SkyblockAPIHook getHook() {
-		NoClassDefFoundError loadException = null;
+		Throwable loadException = null;
 		SkyblockAPIHook skyblockAPI = null;
 		
 		for(HookInfo hookInfo : HookInfo.values()) {
 			String pluginName = hookInfo.name().replace("Legacy", "");
 			if(Bukkit.getServer().getPluginManager().isPluginEnabled(pluginName)) {
+				sendConsole(String.format("&aUsing %s as SkyBlock-Plugin, hook class: %s", pluginName, hookInfo.getHookClass().getName()));
 				try {
-					try {
-						skyblockAPI = (SkyblockAPIHook) hookInfo.getHookClass().newInstance();
-					}catch(NoClassDefFoundError e) {
-						loadException = e;
-						continue;
+					for (Constructor<?> constructor : hookInfo.getHookClass().getDeclaredConstructors()) {
+						if(constructor.getParameterCount() > 0) {
+							skyblockAPI = (SkyblockAPIHook) constructor.newInstance(this);
+						} else {
+							skyblockAPI = (SkyblockAPIHook) constructor.newInstance();
+						}
 					}
-					sendConsole(String.format("&aUsing %s as SkyBlock-Plugin, hook class: %s", pluginName, hookInfo.getHookClass().getName()));
-					break;
-				} catch (InstantiationException | IllegalAccessException e) {
-					e.printStackTrace();
+				}catch(NoClassDefFoundError | IllegalArgumentException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+					loadException = e;
+					continue;
 				}
+				break;
 			}
 		}
 		
