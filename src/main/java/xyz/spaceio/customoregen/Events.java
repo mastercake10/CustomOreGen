@@ -50,9 +50,9 @@ public class Events implements Listener {
 			}
 		}
 		this.enableStoneGenerator = plugin.getConfig().getBoolean("enable-stone-generator");
-		this.enableSoundEffect = plugin.getConfig().getBoolean("enable-sound-effect");
-		this.enableParticleEffect = plugin.getConfig().getBoolean("enable-particle-effect");
-		
+		this.enableSoundEffect = plugin.getConfig().getBoolean("enable-sound-effect", false);
+		this.enableParticleEffect = plugin.getConfig().getBoolean("enable-particle-effect", false);
+
 		try {
 			Class.forName("org.bukkit.block.data.Levelled");
 			useLevelledClass = true;
@@ -60,9 +60,20 @@ public class Events implements Listener {
 			useLevelledClass = false;
 		}
 		
+		if(enableParticleEffect) {
+			try {
+				Class.forName("org.bukkit.Particle");
+			} catch (ClassNotFoundException e) {
+				this.plugin.getLogger().info(
+						String.format("Particle effects are not supported for your bukkit version, disable 'enable-particle-effect' in %s/config.yml to get rid of this message.", this.plugin.getDataFolder().getPath()));
+				this.enableParticleEffect = false;
+			}
+		}
+		
 		if(enableSoundEffect) {
 			// disabling sound effects when enum value not present
 			enableSoundEffect = Arrays.asList(Sound.values()).stream().map(Sound::name).anyMatch(s -> s.equals("BLOCK_FIRE_EXTINGUISH"));
+
 		}
 	}
 
