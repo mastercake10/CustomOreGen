@@ -3,7 +3,7 @@
 [![view on SpigotMC](https://img.shields.io/badge/view%20on-spigotmc-orange.svg)](https://www.spigotmc.org/resources/customoregen.9532/)
 
 ## Welcome to the CustomOreGen GitHub repository!
-Spigot 1.7 - 1.17.x
+Spigot 1.7 - 1.19.x
 
 Documentation, Tutorial and Setup: https://docs.spaceio.xyz/plugin/customoregen/
 
@@ -31,6 +31,6 @@ A neat solution for modifying the default ore generator of minecraft. The must-h
 		<dependency>
 			<groupId>xyz.spaceio</groupId>
 			<artifactId>CustomOreGen</artifactId>
-			<version>1.3.32-SNAPSHOT</version>
+			<version>1.3.33-SNAPSHOT</version>
 		</dependency>
 ```
