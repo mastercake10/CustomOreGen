@@ -1,9 +1,11 @@
 package xyz.spaceio.hooks;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.plotsquared.core.plot.PlotArea;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -26,15 +28,15 @@ public class HookPlotSquared implements SkyblockAPIHook {
 
 	@Override
 	public Optional<UUID> getIslandOwner(Location loc) {
-		Optional<UUID> optional = Optional.empty();
-
-		if(api.getPlotSquared().getPlotAreaManager().getApplicablePlotArea(getPSLocation(loc)).getPlotCount() > 0) {
-			Set<UUID> owners = api.getPlotSquared().getPlotAreaManager().getApplicablePlotArea(getPSLocation(loc)).getPlots().iterator().next().getOwners();
+		PlotArea plotArea = api.getPlotSquared().getPlotAreaManager().getApplicablePlotArea(getPSLocation(loc));
+		if(plotArea != null && plotArea.getPlotCount() > 0) {
+			Set<UUID> owners = Objects.requireNonNull(api.getPlotSquared().getPlotAreaManager().
+					getApplicablePlotArea(getPSLocation(loc))).getPlots().iterator().next().getOwners();
 			if(!owners.isEmpty()) {
-				Optional.of(owners.iterator().next());
+				return Optional.of(owners.iterator().next());
 			}
 		}
-		return optional;
+		return Optional.empty();
 	}
 
 	@Override
