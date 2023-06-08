@@ -1,5 +1,6 @@
 package xyz.spaceio.hooks;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,17 +52,23 @@ public class HookSuperiorSkyblock implements SkyblockAPIHook {
 
 	@Override
 	public String[] getSkyBlockWorldNames() {
-		
-		List<World> worlds = SuperiorSkyblockAPI.getGrid().getRegisteredWorlds();
-		worlds.add(SuperiorSkyblockAPI.getSpawnIsland().getVisitorsLocation().getWorld());
-		
+		List<World> worlds = new ArrayList<>();
+
+		if(SuperiorSkyblockAPI.getGrid() != null && SuperiorSkyblockAPI.getGrid().getRegisteredWorlds() != null) {
+			worlds.addAll(SuperiorSkyblockAPI.getGrid().getRegisteredWorlds());
+		}
+
+		if(SuperiorSkyblockAPI.getSpawnIsland() != null && SuperiorSkyblockAPI.getSpawnIsland().getVisitorsLocation() != null) {
+			worlds.add(SuperiorSkyblockAPI.getSpawnIsland().getVisitorsLocation().getWorld());
+		}
+
 		return worlds.stream().map(w -> w.getName()).toArray(String[]::new);
 	}
 	
 	@Override
 	public void sendBlockAcknowledge(Block block) {
 		if(SuperiorSkyblockAPI.getIslandAt(block.getLocation()) != null) {
-			SuperiorSkyblockAPI.getIslandAt(block.getLocation()).handleBlockPlace(block);	
+			SuperiorSkyblockAPI.getIslandAt(block.getLocation()).handleBlockPlace(block);
 		}
 	}
 
