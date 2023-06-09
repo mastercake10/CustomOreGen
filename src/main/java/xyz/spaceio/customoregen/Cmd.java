@@ -43,7 +43,7 @@ public class Cmd implements CommandExecutor {
 						cs.sendMessage(String.format("§c====== INFO %s =======", player.getName()));
 						cs.sendMessage("§2Skyblock Plugin: §a" + plugin.getHookName());
 						cs.sendMessage("§2Island level: §a" + plugin.getLevel(player.getUniqueId(), player.getWorld().getName()));
-						cs.sendMessage("§2Island owner: §a" + plugin.getOwner(player.getLocation()).getName());
+						cs.sendMessage("§2Island owner: §a" + plugin.getApplicablePlayer(player.getLocation()).getName());
 						
 						GeneratorConfig gc = plugin.getGeneratorConfigForPlayer(player, player.getWorld().getName());
 						cs.sendMessage("§3Applied Generator name: §a" + gc.label);

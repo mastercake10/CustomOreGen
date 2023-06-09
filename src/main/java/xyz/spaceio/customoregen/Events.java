@@ -3,9 +3,9 @@ package xyz.spaceio.customoregen;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Random;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -15,8 +15,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.jetbrains.annotations.Nullable;
 
 
 public class Events implements Listener {
@@ -31,7 +33,7 @@ public class Events implements Listener {
 	private Method legacyBlockPlaceMethod;
 	
 	private boolean enableStoneGenerator;
-	private boolean enableSoundEffect;
+	private Optional<Sound> soundEffect;
 	private boolean enableParticleEffect;
 	
 	public Events(CustomOreGen customOreGen) {
@@ -50,7 +52,6 @@ public class Events implements Listener {
 			}
 		}
 		this.enableStoneGenerator = plugin.getConfig().getBoolean("enable-stone-generator");
-		this.enableSoundEffect = plugin.getConfig().getBoolean("enable-sound-effect", false);
 		this.enableParticleEffect = plugin.getConfig().getBoolean("enable-particle-effect", false);
 
 		try {
@@ -70,87 +71,101 @@ public class Events implements Listener {
 			}
 		}
 		
-		if(enableSoundEffect) {
+		if(plugin.getConfig().getBoolean("enable-sound-effect", false)) {
 			// disabling sound effects when enum value not present
-			enableSoundEffect = Arrays.asList(Sound.values()).stream().map(Sound::name).anyMatch(s -> s.equals("BLOCK_FIRE_EXTINGUISH"));
-
+			soundEffect = Arrays.stream(Sound.values()).filter(s -> {
+				return s.name().equals("BLOCK_FIRE_EXTINGUISH") || s.name().equals("FIZZ");
+			}).findAny();
 		}
 	}
 
-	@SuppressWarnings("deprecation")
+	/**
+	 *	This is used in minecraft versions >= 1.12 and does nothing on other version.
+	 */
 	@EventHandler
-	public void onFromTo(BlockFromToEvent event) {
+	public void blockFormEvent(BlockFormEvent event) {
 		if (plugin.getDisabledWorlds().contains(event.getBlock().getLocation().getWorld().getName())) {
 			return;
 		}
-		
-		Type fromType = this.getType(event.getBlock());
+		if(event.getNewState().getType().equals(Material.COBBLESTONE)
+				|| enableStoneGenerator && event.getNewState().getType().equals(Material.STONE)) {
+			event.setCancelled(true);
 
-		if (fromType != null) {
-			if (!enableStoneGenerator) {
-				if(event.getFace() == BlockFace.DOWN || fromType == Type.WATER_STAT) {
-					return;
-				}
-			}
-			Block b = event.getToBlock();
-			Type toType = this.getType(event.getToBlock());
-			
-			Location fromLoc = b.getLocation();
-			
-			// fix for (lava -> water)
-			if (fromType == Type.LAVA || fromType == Type.LAVA_STAT) {
-				if(!isSurroundedByWater(fromLoc)){
-					return;
-				}
-			}
-			
-			if ((toType != null || b.getType() == Material.AIR) && (this.generatesCobble(fromType, b))) {
-				
-				if (this.getTouchingFace(fromType, b) == BlockFace.DOWN) {
-					b = b.getLocation().add(0, -1, 0).getBlock();
-				} else {
-					event.setCancelled(true);
-				}
-				
-				OfflinePlayer p = plugin.getOwner(b.getLocation());
-				if (p == null)
-					return;
-				GeneratorConfig gc = plugin.getGeneratorConfigForPlayer(p, event.getBlock().getWorld().getName());
-				if (gc == null)
-					return;
-				if (getObject(gc) == null)
-					return;
-				GeneratorItem winning = getObject(gc);
-				if (Material.getMaterial(winning.getName()) == null)
-					return;
+			GeneratorConfig generatorConfig = this.getGeneratorConfigAtLocation(event.getBlock().getLocation());
+			if (generatorConfig != null) {
+				GeneratorItem generatorItem = generatorConfig.getRandomItem();
+				Material material = Material.getMaterial(generatorItem.getName());
 
+				if(material != null) {
+					// set actual block
 
-				//b.setType(Material.getMaterial(winning.getName()));
-				// <Block>.setData(...) is deprecated, but there is no
-				// alternative to it. #spigot
-				if(useLegacyBlockPlaceMethod) {
-					try {
-						legacyBlockPlaceMethod.invoke(b, Material.getMaterial(winning.getName()).getId() , winning.getDamage(), true);
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	
-				}else {
-						b.setType(Material.getMaterial(winning.getName()));
-						b.getState().update(true);
+					placeBlock(event.getBlock(), material, generatorItem.getDamage());
 				}
-				
-				if(enableSoundEffect)
-					b.getWorld().playSound(b.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, 0.5f, 2.6f + ((float) Math.random() - (float) Math.random()) * 0.8f);
-				if(enableParticleEffect)
-					b.getWorld().spawnParticle(Particle.SMOKE_LARGE, b.getLocation().getBlockX() + 0.5D, b.getLocation().getBlockY() + 0.25D, b.getLocation().getBlockZ() + 0.5D, 8, 0.5D, 0.25D, 0.5D, 0.0D);
-				
-				plugin.getSkyblockAPICached().sendBlockAcknowledge(b);
-				//b.setData(winning.getDamage(), true);
 			}
 		}
+	}
 
+	/**
+	 *	Used for older mc versions
+	 */
+	@EventHandler
+	public void onBlockFromToEvent(BlockFromToEvent event) {
+		if(this.isGenerator(event)) {
+			event.setCancelled(true);
+			GeneratorConfig generatorConfig = this.getGeneratorConfigAtLocation(event.getBlock().getLocation());
+			if (generatorConfig != null) {
+				GeneratorItem generatorItem = generatorConfig.getRandomItem();
+				Material material = Material.getMaterial(generatorItem.getName());
+
+				if(material != null) {
+					// set actual block
+
+					placeBlock(event.getToBlock(), material, generatorItem.getDamage());
+				}
+			}
+			event.getBlock().getState().update();
+		}
+	}
+
+	private void placeBlock(Block block, Material material, byte damage) {
+		if(useLegacyBlockPlaceMethod) {
+			try {
+				legacyBlockPlaceMethod.invoke(block, material.getId(), damage, true);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+			block.setType(material);
+			block.getState().update(true);
+		}
+
+		soundEffect.ifPresent(sound -> block.getWorld().playSound(block.getLocation(),
+				sound,
+				0.5f, 2.6f + ((float) Math.random() - (float) Math.random()) * 0.8f));
+
+		if(enableParticleEffect) {
+			block.getWorld().spawnParticle(Particle.SMOKE_LARGE,
+					block.getLocation().getBlockX() + 0.5D,
+					block.getLocation().getBlockY() + 0.25D,
+					block.getLocation().getBlockZ() + 0.5D,
+					8, 0.5D, 0.25D, 0.5D, 0.0D);
+		}
+
+		plugin.getSkyblockAPICached().sendBlockAcknowledge(block);
+	}
+
+	@Nullable
+	private GeneratorConfig getGeneratorConfigAtLocation(Location location) {
+		OfflinePlayer player = plugin.getApplicablePlayer(location);
+		if (player == null)
+			return null;
+		GeneratorConfig gc = plugin.getGeneratorConfigForPlayer(player, location.getWorld().getName());
+
+		if (gc == null)
+			return null;
+
+		return gc;
 	}
 
 	private BlockFace[] blockFaces = { BlockFace.NORTH, BlockFace.WEST, BlockFace.EAST, BlockFace.SOUTH };
@@ -177,28 +192,11 @@ public class Events implements Listener {
 		plugin.getGeneratorConfigForPlayer(e.getPlayer(), e.getPlayer().getWorld().getName());
 	}
 
-	
-	/**
-	 * Chooses a GeneratorItem randomly
-	 * @param gc
-	 * @return
-	 */
-	public GeneratorItem getObject(GeneratorConfig gc) {
-
-		Random random = new Random();
-		double d = random.nextDouble() * 100;
-		for (GeneratorItem key : gc.itemList) {
-			if ((d -= key.getChance()) < 0)
-				return key;
-		}
-		return new GeneratorItem("COBBLESTONE", (byte) 0, 0); // DEFAULT
-	}
-	
 	private enum Type {
 		WATER, WATER_STAT, LAVA, LAVA_STAT
 	}
 	
-	public Type getType(Block b) {
+	private Type getType(Block b) {
 		if(useLevelledClass) {
 			if(b.getBlockData() != null && b.getBlockData() instanceof org.bukkit.block.data.Levelled) {
 				org.bukkit.block.data.Levelled level = (org.bukkit.block.data.Levelled) b.getBlockData();
@@ -233,23 +231,46 @@ public class Events implements Listener {
 
 	private final BlockFace[] faces = { BlockFace.SELF, BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST,
 			BlockFace.SOUTH, BlockFace.WEST };
-	
-	public BlockFace getTouchingFace(Type type, Block b) {
+
+	private boolean generatesCobble(Type type, Block b) {
 		Type mirrorType1 = (type == Type.WATER_STAT) || (type == Type.WATER) ? Type.LAVA_STAT : Type.WATER_STAT;
 		Type mirrorType2 = (type == Type.WATER_STAT) || (type == Type.WATER) ? Type.LAVA : Type.WATER;
 		for (BlockFace face : this.faces) {
 			Block r = b.getRelative(face, 1);
 			if ((this.getType(r) == mirrorType1) || (this.getType(r) == mirrorType2)) {
-				return face;
+				return true;
 			}
 		}
-		return null;
+		return false;
 	}
-	public boolean generatesCobble(Type type, Block b) {
-		if (this.getTouchingFace(type, b) != null) {
-			return true;
+
+	private boolean isGenerator(BlockFromToEvent event) {
+		Type type = this.getType(event.getBlock());
+
+		if (type != null && (!type.equals(Type.WATER_STAT))
+				&& (event.getFace() != BlockFace.DOWN)) {
+
+			if (!enableStoneGenerator) {
+				if(event.getFace() == BlockFace.DOWN) {
+					return false;
+				}
+			}
+
+			Block b = event.getToBlock();
+
+			Location fromLoc = b.getLocation();
+			// fix for (lava <-> water)
+			if ((type.equals(Type.LAVA) || type.equals(Type.LAVA_STAT))) {
+				if (!isSurroundedByWater(fromLoc)) {
+					return false;
+				}
+			}
+
+			if ((b.getType() == Material.AIR || this.getType(b) == Type.WATER || this.getType(b) == Type.WATER_STAT)
+					&& (generatesCobble(type, b))) {
+				return true;
+			}
 		}
-		
 		return false;
 	}
 }

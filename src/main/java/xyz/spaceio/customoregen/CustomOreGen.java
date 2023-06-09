@@ -196,7 +196,7 @@ public class CustomOreGen extends JavaPlugin {
 	 * @param loc Location to check
 	 * @return owner
 	 */
-	public OfflinePlayer getOwner(Location loc) {
+	public OfflinePlayer getApplicablePlayer(Location loc) {
 		if (this.getSkyblockAPICached().getIslandOwner(loc) == null) {
 			return null;
 		}
