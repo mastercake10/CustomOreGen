@@ -143,9 +143,9 @@
 		</dependency>
 		<!--SpaceIO Metrics -->
 		<dependency>
-			<groupId>de.spaceio</groupId>
-			<artifactId>SpaceIOMetrics</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<groupId>xyz.spaceio</groupId>
+			<artifactId>Metrics</artifactId>
+			<version>0.08-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>

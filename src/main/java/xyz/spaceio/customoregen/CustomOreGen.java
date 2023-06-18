@@ -22,13 +22,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.gson.reflect.TypeToken;
 
-import de.Linus122.SpaceIOMetrics.Metrics;
 import xyz.spaceio.configutils.ConfigHandler;
 import xyz.spaceio.configutils.JSONConfig;
 import xyz.spaceio.hooks.HookInfo;
 import xyz.spaceio.hooks.HookVanilla;
 import xyz.spaceio.hooks.SkyblockAPICached;
 import xyz.spaceio.hooks.SkyblockAPIHook;
+import xyz.spaceio.metrics.Metrics;
 import xyz.spaceio.misc.NamePlaceholder;
 
 public class CustomOreGen extends JavaPlugin {
