@@ -13,6 +13,7 @@ import org.bukkit.block.Block;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.database.objects.Island;
+import world.bentobox.level.Level;
 
 public class HookBentoBox implements SkyblockAPIHook{
 	
@@ -24,21 +25,12 @@ public class HookBentoBox implements SkyblockAPIHook{
 
 	@Override
 	public int getIslandLevel(UUID uuid, String onWorld) {
-		int level[] = new int[]{0};
-		
-		// TODO: Access the API instead of using reflection
-		
-		api.getAddonsManager().getAddonByName("Level").ifPresent(addon -> {
-			try {
-				Method method = addon.getClass().getMethod("getIslandLevel", World.class, UUID.class);
-				long rawLevel = (long) method.invoke(addon, Bukkit.getWorld(onWorld), uuid);
-				level[0] = Math.toIntExact(rawLevel);
-			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		});
-		return level[0];
+		if(api.getAddonsManager().getAddonByName("Level").isPresent()) {
+			Level levelAddon = (Level) api.getAddonsManager().getAddonByName("Level").get();
+
+			return (int) levelAddon.getIslandLevel(Bukkit.getWorld(onWorld), uuid);
+		}
+		return 0;
 	}
 
 	@Override
