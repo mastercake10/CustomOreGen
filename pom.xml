@@ -185,17 +185,9 @@
 						<configuration>
 							<artifactSet>
 								<includes>
-									<include>de.spaceio:SpaceIOMetrics</include>
+									<include>xyz.spaceio:Metrics</include>
 								</includes>
 							</artifactSet>
-							<filters>
-								<filter>
-									<artifact>de.spaceio:SpaceIOMetrics</artifact>
-									<includes>
-										<include>**</include>
-									</includes>
-								</filter>
-							</filters>
 						</configuration>
 					</execution>
 				</executions>
