@@ -62,8 +62,9 @@ public class HookFabledSkyblock implements SkyblockAPIHook{
 	
 	@Override
 	public void sendBlockAcknowledge(Block block) {
-		// TODO Auto-generated method stub
-		
+		if(block != null && api.getIslandManager().getIslandAtLocation(block.getLocation()) != null) {
+			api.getLevellingManager().updateLevel(api.getIslandManager().getIslandAtLocation(block.getLocation()), block.getLocation());
+		}
 	}
 	
 }
