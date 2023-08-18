@@ -33,7 +33,7 @@ public class Events implements Listener {
 	private Method legacyBlockPlaceMethod;
 	
 	private boolean enableStoneGenerator;
-	private Optional<Sound> soundEffect;
+	private Optional<Sound> soundEffect = Optional.empty();
 	private boolean enableParticleEffect;
 	
 	public Events(CustomOreGen customOreGen) {
