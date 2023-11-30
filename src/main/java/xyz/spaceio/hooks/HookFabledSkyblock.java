@@ -3,13 +3,13 @@ package xyz.spaceio.hooks;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.craftaro.skyblock.SkyBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 
-import com.songoda.skyblock.SkyBlock;
-import com.songoda.skyblock.island.Island;
+import com.craftaro.skyblock.island.Island;
 
 
 public class HookFabledSkyblock implements SkyblockAPIHook{
@@ -63,6 +63,7 @@ public class HookFabledSkyblock implements SkyblockAPIHook{
 	@Override
 	public void sendBlockAcknowledge(Block block) {
 		if(block != null && api.getIslandManager().getIslandAtLocation(block.getLocation()) != null) {
+			System.out.println(block.getType());
 			api.getLevellingManager().updateLevel(api.getIslandManager().getIslandAtLocation(block.getLocation()), block.getLocation());
 		}
 	}
