@@ -4,7 +4,7 @@
 [![view on SpigotMC](https://img.shields.io/badge/view%20on-spigotmc-orange.svg)](https://www.spigotmc.org/resources/customoregen.9532/)
 
 ## Welcome to the CustomOreGen GitHub repository!
-Spigot 1.7 - 1.19.x
+Spigot 1.7 - 1.21.x
 
 Documentation, Tutorial and Setup: https://docs.spaceio.xyz/plugin/customoregen/
 
@@ -14,6 +14,7 @@ A neat solution for modifying the default ore generator of minecraft. The must-h
 
 - SuperiorSkyblock2
 - BentoBox
+- IridiumSkyblock
 - FabledSkyblock
 - IslandWorld
 - PlotSquared
@@ -24,14 +25,14 @@ A neat solution for modifying the default ore generator of minecraft. The must-h
 
 ### Maven
 ```xml
-		<repository>
-			<id>spaceio-repo</id>
-			<url>https://repo.spaceio.xyz/repository/maven-public/</url>
-		</repository>
-		
-		<dependency>
-			<groupId>xyz.spaceio</groupId>
-			<artifactId>CustomOreGen</artifactId>
-			<version>1.3.34-SNAPSHOT</version>
-		</dependency>
+<repository>
+    <id>spaceio-repo</id>
+    <url>https://repo.spaceio.xyz/repository/maven-public/</url>
+</repository>
+
+<dependency>
+    <groupId>xyz.spaceio</groupId>
+    <artifactId>CustomOreGen</artifactId>
+    <version>1.3.40-SNAPSHOT</version>
+</dependency>
 ```
