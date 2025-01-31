@@ -11,7 +11,9 @@ public enum HookInfo {
 	ASkyBlock(HookASkyBlock.class), BentoBox(HookBentoBox.class),
 	IslandWorld(HookIslandWorld.class), SpaceSkyblock(HookSpaceSkyblock.class),
 	SuperiorSkyblock2(HookSuperiorSkyblock.class), uSkyBlock(HookuSkyBlock.class),
-	FabledSkyBlock(HookFabledSkyblock.class), PlotSquared(HookPlotSquared.class), PlotSquaredLegacy(HookPlotSquaredLegacy.class), Vanilla(HookVanilla.class);
+	FabledSkyBlock(HookFabledSkyblock.class), PlotSquared(HookPlotSquared.class),
+	PlotSquaredLegacy(HookPlotSquaredLegacy.class), IridiumSkyblock(HookIridiumSkyblock.class),
+	Vanilla(HookVanilla.class);
 
 	private Class<?> hookClass;
 

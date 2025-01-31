@@ -233,7 +233,7 @@ public class CustomOreGen extends JavaPlugin {
 	 * @param world			the skyblock world
 	 * @return				the generator config
 	 */
-	public GeneratorConfig getGeneratorConfigForPlayer(OfflinePlayer offlinePlayer, String world) {
+	public Optional<GeneratorConfig> getGeneratorConfigForPlayer(OfflinePlayer offlinePlayer, String world) {
 		
 		GeneratorConfig gc = null;
 		int id = 0;
@@ -276,8 +276,8 @@ public class CustomOreGen extends JavaPlugin {
 			
 			gc = generatorConfigs.get(0);
 		}
-		
-		return gc;
+
+		return Optional.ofNullable(gc);
 	}
 
 	/**

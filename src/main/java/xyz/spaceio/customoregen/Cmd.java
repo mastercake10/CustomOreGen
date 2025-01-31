@@ -1,6 +1,7 @@
 package xyz.spaceio.customoregen;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -45,11 +46,15 @@ public class Cmd implements CommandExecutor {
 						cs.sendMessage("§2Island level: §a" + plugin.getLevel(player.getUniqueId(), player.getWorld().getName()));
 						cs.sendMessage("§2Island owner: §a" + plugin.getApplicablePlayer(player.getLocation()).getName());
 						
-						GeneratorConfig gc = plugin.getGeneratorConfigForPlayer(player, player.getWorld().getName());
-						cs.sendMessage("§3Applied Generator name: §a" + gc.label);
-						cs.sendMessage("§3Generator permission: §a" + gc.permission);
-						cs.sendMessage("§3Generator unlock level: §a" + gc.unlock_islandLevel);
-						
+                        Optional<GeneratorConfig> gc = plugin.getGeneratorConfigForPlayer(player, player.getWorld().getName());
+
+						gc.ifPresentOrElse((config) -> {
+							cs.sendMessage("§3Applied Generator name: §a" + config.label);
+							cs.sendMessage("§3Generator permission: §a" + config.permission);
+							cs.sendMessage("§3Generator unlock level: §a" + config.unlock_islandLevel);
+						}, () -> {
+							cs.sendMessage("§eNo suitable generator config found");
+						});
 						return true;
 						
 					default:

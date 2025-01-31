@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -160,12 +159,12 @@ public class Events implements Listener {
 		OfflinePlayer player = plugin.getApplicablePlayer(location);
 		if (player == null)
 			return null;
-		GeneratorConfig gc = plugin.getGeneratorConfigForPlayer(player, location.getWorld().getName());
+		Optional<GeneratorConfig> gc = plugin.getGeneratorConfigForPlayer(player, location.getWorld().getName());
 
-		if (gc == null)
+		if (gc.isEmpty())
 			return null;
 
-		return gc;
+		return gc.orElse(null);
 	}
 
 	private BlockFace[] blockFaces = { BlockFace.NORTH, BlockFace.WEST, BlockFace.EAST, BlockFace.SOUTH };
