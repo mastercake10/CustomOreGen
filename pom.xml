@@ -163,6 +163,13 @@
 			<version>4.0.9.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- DeluxeSkyblock -->
+		<dependency>
+			<groupId>me.sedattr</groupId>
+			<artifactId>DeluxeSkyblock-API</artifactId>
+			<version>1.0.0</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<!-- Uses the properties in this file for plugin.yml and config.yml -->
