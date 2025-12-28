@@ -88,10 +88,9 @@ public class Events implements Listener {
 		}
 		if(event.getNewState().getType().equals(Material.COBBLESTONE)
 				|| enableStoneGenerator && event.getNewState().getType().equals(Material.STONE)) {
-			event.setCancelled(true);
-
 			GeneratorConfig generatorConfig = this.getGeneratorConfigAtLocation(event.getBlock().getLocation());
 			if (generatorConfig != null) {
+				event.setCancelled(true);
 				GeneratorItem generatorItem = generatorConfig.getRandomItem();
 				Material material = Material.getMaterial(generatorItem.getName());
 
@@ -113,9 +112,9 @@ public class Events implements Listener {
 			return;
 		}
 		if(this.isGenerator(event)) {
-			event.setCancelled(true);
 			GeneratorConfig generatorConfig = this.getGeneratorConfigAtLocation(event.getBlock().getLocation());
 			if (generatorConfig != null) {
+				event.setCancelled(true);
 				GeneratorItem generatorItem = generatorConfig.getRandomItem();
 				Material material = Material.getMaterial(generatorItem.getName());
 
@@ -124,8 +123,8 @@ public class Events implements Listener {
 
 					placeBlock(event.getToBlock(), material, generatorItem.getDamage());
 				}
+				event.getBlock().getState().update();
 			}
-			event.getBlock().getState().update();
 		}
 	}
 
