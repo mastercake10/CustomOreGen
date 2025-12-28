@@ -109,6 +109,9 @@ public class Events implements Listener {
 	 */
 	@EventHandler
 	public void onBlockFromToEvent(BlockFromToEvent event) {
+		if (plugin.getDisabledWorlds().contains(event.getBlock().getLocation().getWorld().getName())) {
+			return;
+		}
 		if(this.isGenerator(event)) {
 			event.setCancelled(true);
 			GeneratorConfig generatorConfig = this.getGeneratorConfigAtLocation(event.getBlock().getLocation());
