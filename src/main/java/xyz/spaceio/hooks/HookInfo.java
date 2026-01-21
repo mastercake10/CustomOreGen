@@ -13,7 +13,7 @@ public enum HookInfo {
 	SuperiorSkyblock2(HookSuperiorSkyblock.class), uSkyBlock(HookuSkyBlock.class),
 	FabledSkyBlock(HookFabledSkyblock.class), PlotSquared(HookPlotSquared.class),
 	PlotSquaredLegacy(HookPlotSquaredLegacy.class), IridiumSkyblock(HookIridiumSkyblock.class),
-	Vanilla(HookVanilla.class);
+	GriefPrevention(HookGriefPrevention.class), Vanilla(HookVanilla.class);
 
 	private Class<?> hookClass;
 
